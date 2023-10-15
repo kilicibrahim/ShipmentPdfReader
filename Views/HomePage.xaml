@@ -1,0 +1,144 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ShipmentPdfReader.HomePage"
+             xmlns:local="clr-namespace:ShipmentPdfReader.Converters"
+             BackgroundColor="#f0f0f0">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:CountToHeightConverter x:Key="CountToHeightConverter"/>
+            <local:InverseBoolConverter x:Key="InverseBoolConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*,*"
+          ColumnDefinitions="*,*">
+
+        <!-- Progress Indicator and Message -->
+        <!--<ProgressBar Grid.ColumnSpan="2"
+                     x:Name="ProgressBar"
+                     Progress="{Binding ProgressValue}"
+                     HeightRequest="20"/>
+        <Label Grid.ColumnSpan="2"
+               x:Name="ProgressMessageLabel"
+               Text="{Binding ProgressMessage}"
+               HorizontalOptions="Center"/>-->
+        <StackLayout VerticalOptions="FillAndExpand">
+            <Label Text="Extracted Orders" 
+           BackgroundColor="Transparent" 
+           TextColor="Black" 
+           FontAttributes="Bold" 
+           FontSize="Large" 
+           HorizontalTextAlignment="Center" 
+           VerticalTextAlignment="Center"
+           HeightRequest="50"/>
+            <!-- Logs Column -->
+        <CollectionView x:Name="ExtractedDataView" 
+                ItemsSource="{Binding ExtractedPagesData}" 
+                VerticalOptions="FillAndExpand"
+                HeightRequest="500"
+                BackgroundColor="#512BD4">
+            <CollectionView.Header>
+                <Label Text="Extracted Data" 
+               BackgroundColor="LightGray" 
+               TextColor="Black" 
+               FontAttributes="Bold" 
+               FontSize="Large" 
+               HorizontalTextAlignment="Center" 
+               VerticalTextAlignment="Center"
+               HeightRequest="50"/>
+            </CollectionView.Header>
+
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="2"/>
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="10" Margin="5" BorderColor="Black" CornerRadius="5" HeightRequest="{Binding Items.Count, Converter={StaticResource CountToHeightConverter}}">
+                        <StackLayout>
+                            <StackLayout.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnItemTapped"/>
+                            </StackLayout.GestureRecognizers>
+                            <Label Text="{Binding PageNumber}" FontAttributes="Bold"/>
+                            <Label Text="{Binding TotalItems, StringFormat='Total Items: {0}'}" FontAttributes="Bold"/>
+
+                            <!-- Inner collection with BindableLayout -->
+                            <StackLayout BindableLayout.ItemsSource="{Binding Items}" Spacing="10">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackLayout Spacing="4" WidthRequest="200" HeightRequest="250">
+                                            <!-- Adjust the WidthRequest as needed -->
+                                            <Label Text="{Binding Quantity, StringFormat='Quantity: {0}'}" FontAttributes="Italic"/>
+                                            <Label Text="{Binding Sku, StringFormat='Sku: {0}'}" FontAttributes="Italic"/>
+                                            <Label Text="{Binding Size, StringFormat='Size: {0}'}" FontAttributes="Italic"/>
+                                            <Label Text="{Binding Color, StringFormat='Color: {0}'}" FontAttributes="Italic"/>
+
+                                            <!-- Additional Details Section -->
+                                            <ScrollView IsVisible="{Binding IsExpanded}" Orientation="Vertical" HeightRequest="100">
+                                                <StackLayout Padding="10,0,0,0">
+
+                                                </StackLayout>
+                                            </ScrollView>
+                                        </StackLayout>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </StackLayout>
+                        </StackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        </StackLayout>
+
+        <!-- Warnings Column -->
+        <StackLayout VerticalOptions="FillAndExpand"
+            Grid.Column="1">
+            <Label Text="Warnings" 
+           BackgroundColor="Transparent" 
+           TextColor="Black" 
+           FontAttributes="Bold" 
+           FontSize="Large" 
+           HorizontalTextAlignment="Center" 
+           VerticalTextAlignment="Center"
+           HeightRequest="50"/>
+            <CollectionView x:Name="WarningLog" Grid.Column="1" 
+            ItemsSource="{Binding WarningMessages}" 
+            BackgroundColor="#d4bd2b"
+            VerticalOptions="FillAndExpand"
+            HeightRequest="500">
+            <CollectionView.Header>
+                <Label Text="Warning Messages" FontAttributes="Bold" FontSize="Large" HorizontalTextAlignment="Center" />
+            </CollectionView.Header>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <ContentView>
+                        <StackLayout Orientation="Horizontal">
+                            <CheckBox IsChecked="false" />
+                            <Label Text="{Binding}" 
+                        TextColor="#d42b5b" 
+                        HorizontalOptions="FillAndExpand" 
+                        VerticalOptions="Center"/>
+                        </StackLayout>
+                    </ContentView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        </StackLayout>
+
+
+
+        <!-- Control Button -->
+        <StackLayout Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" Spacing="20" Padding="10"
+                     HorizontalOptions="Center">
+            <!-- Centering StackLayout -->
+            <Button x:Name="StartButton"
+                    Text="Start Processing"
+                    Padding="20,10"
+                    WidthRequest="150" 
+                    HeightRequest="50" 
+                    Command="{Binding StartProcessingCommand}"
+                    HorizontalOptions="Center"/>
+            <!-- Centering Button -->
+        </StackLayout>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,77 @@
+﻿<d:BaseInfoPage
+    x:Class="ShipmentPdfReader.ColorInfoPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:ShipmentPdfReader.ViewModels" 
+    xmlns:d="clr-namespace:ShipmentPdfReader"
+    BackgroundColor="{DynamicResource PageBackgroundColor}">
+
+    <StackLayout x:Name="ColorInfoPageLayout" Padding="20">
+        <Label Text="Color Pairs" FontSize="28" HorizontalOptions="Center" Margin="0,0,0,10" TextColor="DarkBlue"/>
+
+        <!-- Headers -->
+        <Grid Padding="5" Margin="0,0,0,10" RowSpacing="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="120" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+            
+            <BoxView Color="LightGray" Grid.Column="0" Grid.Row="0"/>
+            <BoxView Color="LightGray" Grid.Column="1" Grid.Row="0"/>
+
+            <Label Text="Background Color" Grid.Column="0" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+            <Label Text="Font Color" Grid.Column="1" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+            <Label Text="" Grid.Column="4"/>
+        </Grid>
+
+        <!-- Data Entries -->
+        <ListView ItemsSource="{Binding Configurations}" SelectedItem="{Binding SelectedConfiguration}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid Padding="5" RowSpacing="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="120" />
+                            </Grid.ColumnDefinitions>
+
+                            <Entry Text="{Binding BackgroundColor}" Grid.Column="0"/>
+                            <Entry Text="{Binding FontColor}" Grid.Column="1"/>
+                            <Button Text="Delete" 
+                            HeightRequest="30"
+                            WidthRequest="120"
+                            Command="{Binding Path=BindingContext.DeleteCommand, Source={x:Reference Name=ColorInfoPageLayout}}" 
+                            CommandParameter="{Binding .}" 
+                            Grid.Column="4"
+                            BackgroundColor="Red" 
+                            TextColor="White"/>
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <!-- New Entry Fields -->
+        <Grid Margin="0,20,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Entry Placeholder="Size" Text="{Binding NewEntry.BackroundColor}" Grid.Column="0"/>
+            <Entry Placeholder="Value" Text="{Binding NewEntry.FontColor}" Grid.Column="1"/>
+            <Button Text="Add New Entry" Command="{Binding AddNewEntryCommand}" IsEnabled="{Binding CanAddEntry}" BackgroundColor="DarkBlue" TextColor="White" Grid.Column="2"/>
+        </Grid>
+
+        <!-- Save Button -->
+        <Button Text="Save" Command="{Binding SaveCommand}" IsEnabled="{Binding CanSave}" BackgroundColor="ForestGreen" TextColor="White" HorizontalOptions="End"/>
+    </StackLayout>
+
+
+</d:BaseInfoPage>

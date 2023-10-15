@@ -1,0 +1,44 @@
+[
+    {
+        "skuCode": "CC0258",
+        "sizeValue": 17
+
+    },
+    {
+        "skuCode": "CC0233",
+        "sizeValue": 15,
+        "IsColorSelectionManual": "True"
+    },
+    {
+        "skuCode": "CC0255",
+        "sizeValue": 17
+    },
+    {
+        "skuCode": "CC0260",
+        "sizeValue": 17
+    },
+    {
+        "skuCode": "CC0339",
+        "sizeValue": 15
+    },
+    {
+        "skuCode": "CC0099",
+        "sizeValue": 15
+    },
+    {
+        "skuCode": "CC0099",
+        "sizeValue": 15
+    },
+    {
+        "skuCode": "CC0124",
+        "sizeValue": 7
+    },
+    {
+        "skuCode": "CC0066",
+        "sizeValue": 15
+    },
+    {
+        "skuCode": "KT0600",
+        "sizeValue": 17
+    }
+]

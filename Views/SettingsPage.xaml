@@ -1,0 +1,38 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ShipmentPdfReader.SettingsPage"
+             BackgroundColor="#f0f0f0">
+
+    <Grid RowDefinitions="*,*,*"
+          ColumnDefinitions="*,*,*">
+        <!-- Title -->
+        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
+               Text="Settings"
+               FontSize="30"
+               HorizontalOptions="Start"
+               VerticalOptions="Center"
+               TextColor="Black"/> 
+
+        <!-- Buttons -->
+        <StackLayout Grid.Row="7" Grid.Column="0" Padding="20" HorizontalOptions="Start" VerticalOptions="Start">
+            <Label Text="Output Directory Path:" FontAttributes="Bold"/>
+            <Label Text="{Binding OutputDirectoryPath}" FontAttributes="Italic" />
+            <Button Text="Select Output Directory"
+                    TextColor="White"
+                    BackgroundColor="#4CAF50"
+                    Padding="20,10"
+                    WidthRequest="200"
+                    Command="{Binding SelectOutputDirectoryCommand}" />
+
+            <Label Text="Source Directory Path:" FontAttributes="Bold"/>
+            <Label Text="{Binding SourceDirectoryPath}" FontAttributes="Italic" />
+            <Button Text="Select Source Directory"
+                    TextColor="White"
+                    BackgroundColor="#4CAF50"
+                    Padding="20,10"
+                    WidthRequest="200"
+                    Command="{Binding SelectSourceDirectoryCommand}" />
+
+        </StackLayout>
+    </Grid>
+</ContentPage>

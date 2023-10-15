@@ -1,0 +1,142 @@
+﻿<d:BaseInfoPage
+    x:Class="ShipmentPdfReader.SpecialSkuCodeInfoPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:ShipmentPdfReader.ViewModels" 
+    xmlns:d="clr-namespace:ShipmentPdfReader"
+    xmlns:b="clr-namespace:ShipmentPdfReader.Behaviors"
+    BackgroundColor="{DynamicResource PageBackgroundColor}">
+
+    <StackLayout x:Name="SpecialSkuCodeInfoPageLayout" Padding="20">
+        <Label Text="Special Sku's" FontSize="28" HorizontalOptions="Center" Margin="0,0,0,10" TextColor="DarkBlue"/>
+
+        <!-- Headers -->
+        <Grid Padding="5" Margin="0,0,0,10" RowSpacing="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="120" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+            
+            <BoxView Color="LightGray" Grid.Column="0" Grid.Row="0"/>
+            <BoxView Color="LightGray" Grid.Column="1" Grid.Row="0"/>
+            <BoxView Color="LightGray" Grid.Column="2" Grid.Row="0"/>
+            <BoxView Color="LightGray" Grid.Column="3" Grid.Row="0"/>
+            <BoxView Color="LightGray" Grid.Column="4" Grid.Row="0"/>
+            <BoxView Color="LightGray" Grid.Column="5" Grid.Row="0"/>
+
+            <Label Text="Sku Code" Grid.Column="0" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+            <Label Text="Size Value" Grid.Column="1" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+            <Label Text="Back Value" Grid.Column="2" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+            <Label Text="Pocket Value" Grid.Column="3" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+            <Label Text="Sleeve Value" Grid.Column="4" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+            <Label Text="Manuel Color" Grid.Column="5" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+            <Label Text="" Grid.Column="6"/>
+        </Grid>
+
+        <!-- Data Entries -->
+        <ListView ItemsSource="{Binding Configurations}" SelectedItem="{Binding SelectedConfiguration}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid Padding="5" RowSpacing="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="120" />
+                            </Grid.ColumnDefinitions>
+
+                            <Entry Text="{Binding SkuCode}" Grid.Column="0"/>
+                            <Entry Text="{Binding SizeValue}" Grid.Column="1">
+                                <Entry.Behaviors>
+                                    <b:NumericValidationBehavior />
+                                </Entry.Behaviors>
+                            </Entry>
+                            <Entry Text="{Binding BackValue}" Grid.Column="2">
+                                <Entry.Behaviors>
+                                    <b:NumericValidationBehavior />
+                                </Entry.Behaviors>
+                            </Entry>
+                            <Entry Text="{Binding PocketValue}" Grid.Column="3">
+                                <Entry.Behaviors>
+                                    <b:NumericValidationBehavior />
+                                </Entry.Behaviors>
+                            </Entry>
+                            <Entry Text="{Binding SleeveValue}" Grid.Column="4">
+                                <Entry.Behaviors>
+                                    <b:NumericValidationBehavior />
+                                </Entry.Behaviors>
+                            </Entry>
+                            <Grid Margin="60,0,0,0" Grid.Column="5" HorizontalOptions="Center" VerticalOptions="Center">
+                                <Switch IsToggled="{Binding IsColorSelectionManual}" />
+                            </Grid>
+                            <Button Text="Delete" 
+                            HeightRequest="30"
+                            WidthRequest="120"
+                            Command="{Binding Path=BindingContext.DeleteCommand, Source={x:Reference Name=SpecialSkuCodeInfoPageLayout}}" 
+                            CommandParameter="{Binding .}" 
+                            Grid.Column="6"
+                            BackgroundColor="Red" 
+                            TextColor="White"/>
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <!-- New Entry Fields -->
+        <Grid Margin="0,20,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Entry Placeholder="Size" Text="{Binding NewEntry.SkuCode}" Grid.Column="0"/>
+            <Entry Placeholder="Value" Text="{Binding NewEntry.SizeValue}" Grid.Column="1">
+                <Entry.Behaviors>
+                    <b:NumericValidationBehavior />
+                </Entry.Behaviors>
+            </Entry>
+            <Entry Placeholder="Back Value" Text="{Binding NewEntry.BackValue}" Grid.Column="2">
+                <Entry.Behaviors>
+                    <b:NumericValidationBehavior />
+                </Entry.Behaviors>
+            </Entry>
+            <Entry Placeholder="Pocket Value" Text="{Binding NewEntry.PocketValue}" Grid.Column="3">
+                <Entry.Behaviors>
+                    <b:NumericValidationBehavior />
+                </Entry.Behaviors>
+            </Entry>
+            <Entry Placeholder="Sleeve Value" Text="{Binding NewEntry.SleeveValue}" Grid.Column="4">
+                <Entry.Behaviors>
+                    <b:NumericValidationBehavior />
+                </Entry.Behaviors>
+            </Entry>
+            <Grid Margin="60,0,0,0"  Grid.Column="5" HorizontalOptions="CenterAndExpand"  VerticalOptions="Center">
+                <Switch IsToggled="{Binding IsColorSelectionManual}" />
+            </Grid>
+            <Button Text="Add New Entry" Command="{Binding AddNewEntryCommand}" IsEnabled="{Binding CanAddEntry}" BackgroundColor="DarkBlue" TextColor="White" Grid.Column="6"/>
+        </Grid>
+
+        <!-- Save Button -->
+        <Button Text="Save" Command="{Binding SaveCommand}" IsEnabled="{Binding CanSave}" BackgroundColor="ForestGreen" TextColor="White" HorizontalOptions="End"/>
+    </StackLayout>
+
+
+</d:BaseInfoPage>

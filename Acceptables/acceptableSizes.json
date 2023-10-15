@@ -1,0 +1,315 @@
+[
+    {
+        "size": "Comfort Colors S",
+        "value": 12,
+        "pocketValue": 6
+    },
+    {
+        "size": "Comfort Colors M",
+        "value": 12,
+        "pocketValue": 6
+    },
+    {
+        "size": "Comfort Colors L",
+        "value": 12,
+        "pocketValue": 6
+    },
+    {
+        "size": "Comfort Colors XL",
+        "value": 12,
+        "pocketValue": 6
+    },
+    {
+        "size": "Comfort Colors 2XL",
+        "value": 13,
+        "pocketValue": 6
+    },
+    {
+        "size": "Comfort Colors XXL",
+        "value": 13,
+        "pocketValue": 6
+    },
+    {
+        "size": "Unisex T-Shirt / S",
+        "value": 11,
+        "pocketValue": 5
+    },
+    {
+        "size": "Unisex T-Shirt / M",
+        "value": 11,
+        "pocketValue": 5
+    },
+    {
+        "size": "Unisex T-Shirt / L",
+        "value": 11,
+        "pocketValue": 5
+    },
+    {
+        "size": "Unisex T-Shirt / XL",
+        "value": 11,
+        "pocketValue": 5
+    },
+    {
+        "size": "Unisex T-Shirt / 2XL",
+        "value": 11,
+        "pocketValue": 5
+    },
+    {
+        "size": "Unisex Shirt S",
+        "value": 11,
+        "pocketValue": 5
+    },
+    {
+        "size": "Unisex Shirt M",
+        "value": 11,
+        "pocketValue": 5
+    },
+    {
+        "size": "Unisex Shirt L",
+        "value": 11,
+        "pocketValue": 5
+    },
+    {
+        "size": "Unisex Shirt XL",
+        "value": 11,
+        "pocketValue": 5
+    },
+    {
+        "size": "Unisex Shirt XXL",
+        "value": 12,
+        "pocketValue": 5
+    },
+    {
+        "size": "Unisex Shirt 2XL",
+        "value": 12,
+        "pocketValue": 5
+    },
+    {
+        "size": "Toddler 2T",
+        "value": 5.5,
+        "pocketValue": 4
+    },
+    {
+        "size": "Toddler 5-6T",
+        "value": 5.5,
+        "pocketValue": 4
+    },
+    {
+        "size": "Sweatshirt-S",
+        "value": 13,
+        "pocketValue": 5
+    },
+    {
+        "size": "Sweatshirt-M",
+        "value": 13,
+        "pocketValue": 5
+    },
+    {
+        "size": "Sweatshirt-L",
+        "value": 13,
+        "pocketValue": 5
+    },
+    {
+        "size": "Sweatshirt-XL",
+        "value": 13,
+        "pocketValue": 5
+    },
+    {
+        "size": "Sweatshirt-XXL",
+        "value": 13,
+        "pocketValue": 5
+    },
+    {
+        "size": "Sweatshirt-2XL",
+        "value": 13.5,
+        "pocketValue": 5
+    },
+    {
+        "size": "Sweatshirt S",
+        "value": 13,
+        "pocketValue": 5
+    },
+    {
+        "size": "Sweatshirt M",
+        "value": 13,
+        "pocketValue": 5
+    },
+    {
+        "size": "Sweatshirt L",
+        "value": 13,
+        "pocketValue": 5
+    },
+    {
+        "size": "Sweatshirt XL",
+        "value": 13,
+        "pocketValue": 5
+    },
+    {
+        "size": "Sweatshirt XXL",
+        "value": 13.5,
+        "pocketValue": 5.5
+    },
+    {
+        "size": "Sweatshirt 2XL",
+        "value": 13.5,
+        "pocketValue": 5.5
+    },
+    {
+        "size": "Hoodie S",
+        "value": 11.5,
+        "pocketValue": 5
+    },
+    {
+        "size": "Hoodie M",
+        "value": 11.5,
+        "pocketValue": 5
+    },
+    {
+        "size": "Hoodie L",
+        "value": 12,
+        "pocketValue": 5
+    },
+    {
+        "size": "Hoodie XL",
+        "value": 12,
+        "pocketValue": 5
+    },
+    {
+        "size": "Hoodie XXL",
+        "value": 12.5,
+        "pocketValue": 5
+    },
+    {
+        "size": "Hoodie 2XL",
+        "value": 12.5,
+        "pocketValue": 5.5
+    },
+    {
+        "size": "Unisex S",
+        "value": 11,
+        "pocketValue": 5
+    },
+    {
+        "size": "Unisex M",
+        "value": 11,
+        "pocketValue": 5
+    },
+    {
+        "size": "Unisex L",
+        "value": 11,
+        "pocketValue": 5
+    },
+    {
+        "size": "Unisex XL",
+        "value": 11,
+        "pocketValue": 5
+    },
+    {
+        "size": "Unisex XXL",
+        "value": 12,
+        "pocketValue": 5.5
+    },
+    {
+        "size": "Hoodie / S",
+        "value": 11.5,
+        "pocketValue": 5
+    },
+    {
+        "size": "Hoodie / M",
+        "value": 11,
+        "pocketValue": 5
+    },
+    {
+        "size": "Hoodie / L",
+        "value": 12,
+        "pocketValue": 5
+    },
+    {
+        "size": "Hoodie / XL",
+        "value": 12,
+        "pocketValue": 5
+    },
+    {
+        "size": "Hoodie / XXL",
+        "value": 12.5,
+        "pocketValue": 5.5
+    },
+    {
+        "size": "Youth T-Shirt / S",
+        "value": 9,
+        "pocketValue": 4
+    },
+    {
+        "size": "Youth T-Shirt / M",
+        "value": 9,
+        "pocketValue": 4
+    },
+    {
+        "size": "Youth T-Shirt / L",
+        "value": 9,
+        "pocketValue": 4
+    },
+    {
+        "size": "Youth T-Shirt / XL",
+        "value": 9,
+        "pocketValue": 4
+    },
+    {
+        "size": "Youth T-Shirt / XXL",
+        "value": 9,
+        "pocketValue": 5
+    },
+    {
+        "size": "Sweatshirt / S",
+        "value": 13,
+        "pocketValue": 5
+    },
+    {
+        "size": "Sweatshirt / M",
+        "value": 13,
+        "pocketValue": 5
+    },
+    {
+        "size": "Sweatshirt / L",
+        "value": 13,
+        "pocketValue": 5
+    },
+    {
+        "size": "Sweatshirt / XL",
+        "value": 13,
+        "pocketValue": 5
+    },
+    {
+        "size": "Sweatshirt / XXL",
+        "value": 13.5,
+        "pocketValue": 5.5
+    },
+    {
+        "pocketValue": 4,
+        "size": "12­-18 Month Onesie",
+        "value": 5.5
+    },
+    {
+        "pocketValue": 5,
+        "size": "Toddler 4T",
+        "value": 7
+    },
+    {
+        "pocketValue": 5,
+        "size": "Toddler 5-6T",
+        "value": 7
+    },
+    {
+        "pocketValue": 4.5,
+        "size": "Youth L",
+        "value": 9
+    },
+    {
+        "pocketValue": 6,
+        "size": "COMFORT COLORS",
+        "value": 12
+    }
+
+
+
+]
