@@ -63,8 +63,7 @@ ShipmentPdfReader is licensed under the [MIT license](/LICENSE).
 
 ## Acknowledgements
 
-*Your acknowledgements here*
-
+none yet :d
 ## Contact
 
 muhammedibrahimkilic@gmail.com
