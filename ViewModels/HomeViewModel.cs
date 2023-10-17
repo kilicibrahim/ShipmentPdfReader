@@ -2,7 +2,9 @@
 using CommunityToolkit.Mvvm.Messaging;
 using ShipmentPdfReader.Services.Pdf;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows.Input;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ShipmentPdfReader.ViewModels
 {
@@ -122,7 +124,7 @@ namespace ShipmentPdfReader.ViewModels
             }
             catch (Exception ex)
             {
-                WeakReferenceMessenger.Default.Send(new Messages("Failed to process the PDF. Please try again or contact support!"));
+                WeakReferenceMessenger.Default.Send(new Messages($"Failed to process the PDF. Please try again or contact support! With the following message: {ex}"));
             }
 
             return;

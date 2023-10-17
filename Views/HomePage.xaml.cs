@@ -8,6 +8,7 @@ namespace ShipmentPdfReader
     {
         //private string _selectedFilePath;
 
+        [Obsolete]
         public HomePage()
         {
             InitializeComponent();

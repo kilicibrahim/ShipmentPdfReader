@@ -1,6 +1,8 @@
 ﻿using System.IO;
+using System.IO.Compression;
 using System.Reflection;
 using Newtonsoft.Json;
+using ShipmentPdfReader;
 using ShipmentPdfReader.Models;
 public class ConfigurationManager
 {
@@ -118,6 +120,83 @@ public class ConfigurationManager
         {
             Console.WriteLine($"Error reading {filename}: {ex.Message}");
             return default; 
+        }
+    }
+
+    public void BatchExportConfigurations(string path)
+    {
+        try
+        {
+            var tempDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(tempDirectory);
+
+            SaveJsonToFile(AcceptableColors, Path.Combine(tempDirectory, "acceptableColors.json"));
+            SaveJsonToFile(AcceptableSizes, Path.Combine(tempDirectory, "acceptableSizes.json"));
+            SaveJsonToFile(SpecialSkuCodes, Path.Combine(tempDirectory, "specialSKUCodes.json"));
+
+            var zipFileName = "ConfigurationsExport.zip";
+            var zipFilePath = Path.Combine(path, zipFileName); // Use the provided path
+
+            if (File.Exists(zipFilePath))
+            {
+                File.Delete(zipFilePath);
+            }
+            ZipFile.CreateFromDirectory(tempDirectory, zipFilePath);
+
+            Directory.Delete(tempDirectory, true);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error during batch export of configurations: {ex.Message}");
+        }
+    }
+
+
+
+
+    public void ImportConfiguration(string importPath, ConfigurationType configType)
+    {
+        try
+        {
+            var jsonContent = File.ReadAllText(importPath);
+
+            switch (configType)
+            {
+                case ConfigurationType.Color:
+                    this.AcceptableColors = JsonConvert.DeserializeObject<List<ColorInfo>>(jsonContent);
+                    SaveJsonToFile(this.AcceptableColors, "acceptableColors.json");
+                    break;
+
+                case ConfigurationType.Size:
+                    this.AcceptableSizes = JsonConvert.DeserializeObject<List<SizeInfo>>(jsonContent);
+                    SaveJsonToFile(this.AcceptableSizes, "acceptableSizes.json");
+                    break;
+
+                case ConfigurationType.Sku:
+                    this.SpecialSkuCodes = JsonConvert.DeserializeObject<List<SpecialSkuCodeInfo>>(jsonContent);
+                    SaveJsonToFile(this.SpecialSkuCodes, "specialSKUCodes.json");
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error importing configuration: {ex.Message}");
+        }
+    }
+
+    private class ImportedConfiguration
+    {
+        public List<ColorInfo> AcceptableColors
+        {
+            get; set;
+        }
+        public List<SizeInfo> AcceptableSizes
+        {
+            get; set;
+        }
+        public List<SpecialSkuCodeInfo> SpecialSkuCodes
+        {
+            get; set;
         }
     }
 

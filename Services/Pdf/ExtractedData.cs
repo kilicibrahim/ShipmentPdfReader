@@ -8,6 +8,7 @@ namespace ShipmentPdfReader.Services.Pdf
     {
         public int TotalItems { get; set; }
         public int PageNumber { get; set; }
+        public bool IsPersonalized { get; set; }
 
         public ExtractedData()
         {

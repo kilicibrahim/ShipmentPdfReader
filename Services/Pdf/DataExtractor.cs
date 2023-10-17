@@ -57,7 +57,7 @@ namespace ShipmentPdfReader.Services.Pdf
                 var normalizedLine = line.ToLower().Replace("­", "").Replace("\u00A0", " ");
                 if (normalizedLine.Contains("personalization:"))
                 {
-                    Console.WriteLine($"WARNING: Personalization found on page {pageNumber}. Please review manually!");
+                    extractedData.IsPersonalized = true;
                 }
                 var quantityRegex = new Regex(@"^\d{1,2}( \d{1,2})?$", RegexOptions.Multiline);
                 var quantitymatches = quantityRegex.Matches(line);

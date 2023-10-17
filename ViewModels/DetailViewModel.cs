@@ -24,7 +24,6 @@ namespace ShipmentPdfReader.ViewModels
         public DetailViewModel(ExtractedData data)
         {
             Data = data;
-            MessagingCenter.Send(this, "DataUpdated", Data);
             WeakReferenceMessenger.Default.Send(new Messages("Data saved successfully!"));
         }
     }

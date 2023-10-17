@@ -1,6 +1,8 @@
 using Newtonsoft.Json;
 using ShipmentPdfReader.Services.Pdf;
 using ShipmentPdfReader.ViewModels;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Diagnostics;
 
 namespace ShipmentPdfReader
 {
@@ -14,7 +16,7 @@ namespace ShipmentPdfReader
 
         private void OnCloseClicked(object sender, EventArgs e)
         {
-            this.Navigation.PopAsync(); // You might adjust navigation based on your app structure
+            this.Navigation.PopAsync();
         }
     }
 }

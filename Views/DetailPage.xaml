@@ -16,7 +16,7 @@
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Frame  Padding="10" Margin="5" BorderColor="Black" CornerRadius="15" HeightRequest="{Binding Items.Count, Converter={StaticResource CountToHeightConverter}}">
+                        <Frame  Padding="10" Margin="5" BorderColor="Black" CornerRadius="15">
 
                             <Grid Padding="10"  Margin="0,5">
                                 <Grid.RowDefinitions>
@@ -25,10 +25,10 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <Entry BackgroundColor="#a6c3e6" Text="{Binding Quantity}" Grid.Row="0" Placeholder="Quantity" PlaceholderColor="#e82700"/>
-                                <Entry BackgroundColor="#a6e3e6" Text="{Binding Sku}" Grid.Row="1" Placeholder="Sku" PlaceholderColor="#e82700"/>
-                                <Entry BackgroundColor="#a6c3e6" Text="{Binding Size}" Grid.Row="2" Placeholder="Size" PlaceholderColor="#e82700"/>
-                                <Entry BackgroundColor="#a6e3e6" Text="{Binding Color}" Grid.Row="3" Placeholder="Color" PlaceholderColor="#e82700"/>
+                                <Entry BackgroundColor="#fed733" Text="{Binding Quantity}" Grid.Row="0" Placeholder="Quantity" PlaceholderColor="#e82700"/>
+                                <Entry BackgroundColor="#f0f0f0" Text="{Binding Sku}" Grid.Row="1" Placeholder="Sku" PlaceholderColor="#e82700"/>
+                                <Entry BackgroundColor="#fed733" Text="{Binding Size}" Grid.Row="2" Placeholder="Size" PlaceholderColor="#e82700"/>
+                                <Entry BackgroundColor="#f0f0f0" Text="{Binding Color}" Grid.Row="3" Placeholder="Color" PlaceholderColor="#e82700"/>
                             </Grid>
                         </Frame>
                     </DataTemplate>

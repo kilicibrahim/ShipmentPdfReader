@@ -103,7 +103,7 @@
            HeightRequest="50"/>
             <CollectionView x:Name="WarningLog" Grid.Column="1" 
             ItemsSource="{Binding WarningMessages}" 
-            BackgroundColor="#d4bd2b"
+            BackgroundColor="#fed733"
             VerticalOptions="FillAndExpand"
             HeightRequest="500">
             <CollectionView.Header>
@@ -113,9 +113,9 @@
                 <DataTemplate>
                     <ContentView>
                         <StackLayout Orientation="Horizontal">
-                            <CheckBox IsChecked="false" />
-                            <Label Text="{Binding}" 
-                        TextColor="#d42b5b" 
+                                <CheckBox IsChecked="false" />
+                                <Label Text="{Binding}" FontAttributes="Bold" 
+                        TextColor="Black" 
                         HorizontalOptions="FillAndExpand" 
                         VerticalOptions="Center"/>
                         </StackLayout>

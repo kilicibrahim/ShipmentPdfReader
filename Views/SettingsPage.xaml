@@ -3,36 +3,35 @@
              x:Class="ShipmentPdfReader.SettingsPage"
              BackgroundColor="#f0f0f0">
 
-    <Grid RowDefinitions="*,*,*"
-          ColumnDefinitions="*,*,*">
-        <!-- Title -->
-        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
-               Text="Settings"
-               FontSize="30"
-               HorizontalOptions="Start"
-               VerticalOptions="Center"
-               TextColor="Black"/> 
+    <Grid ColumnSpacing="0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-        <!-- Buttons -->
-        <StackLayout Grid.Row="7" Grid.Column="0" Padding="20" HorizontalOptions="Start" VerticalOptions="Start">
-            <Label Text="Output Directory Path:" FontAttributes="Bold"/>
-            <Label Text="{Binding OutputDirectoryPath}" FontAttributes="Italic" />
-            <Button Text="Select Output Directory"
-                    TextColor="White"
-                    BackgroundColor="#4CAF50"
-                    Padding="20,10"
-                    WidthRequest="200"
-                    Command="{Binding SelectOutputDirectoryCommand}" />
+        <!-- Sidebar -->
+        <CollectionView x:Name="Sidebar" 
+                        ItemsSource="{Binding SidebarItems}" 
+                        SelectionMode="Single" 
+                        SelectionChanged="OnSidebarSelectionChanged"
+                        BackgroundColor="#E8E8E8">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Label Text="{Binding }" 
+                           FontSize="20" 
+                           VerticalOptions="Center" 
+                           Padding="10" 
+                           BackgroundColor="#E8E8E8"/>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
 
-            <Label Text="Source Directory Path:" FontAttributes="Bold"/>
-            <Label Text="{Binding SourceDirectoryPath}" FontAttributes="Italic" />
-            <Button Text="Select Source Directory"
-                    TextColor="White"
-                    BackgroundColor="#4CAF50"
-                    Padding="20,10"
-                    WidthRequest="200"
-                    Command="{Binding SelectSourceDirectoryCommand}" />
-
+        <!-- Content -->
+        <StackLayout x:Name="ContentArea" 
+                     Grid.Column="1" 
+                     Spacing="20" 
+                     Padding="20,40">
+            <!-- This will be dynamically populated based on the sidebar selection -->
         </StackLayout>
     </Grid>
 </ContentPage>

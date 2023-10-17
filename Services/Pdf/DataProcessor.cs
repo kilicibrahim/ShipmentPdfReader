@@ -11,7 +11,8 @@ namespace ShipmentPdfReader.Services.Pdf
     internal class DataProcessor
     {
         private readonly ConfigurationManager _configManager;
-
+        private int _currentDirectoryNumber = 1;
+        private int? _runningTotal = 0;
         public DataProcessor()
         {
             _configManager = ConfigurationManager.Instance;
@@ -32,17 +33,29 @@ namespace ShipmentPdfReader.Services.Pdf
         private void ProcessPage(ProcessedData processedMessage, PageData page)
         {
             var pageNumber = page.PageNumber;
+            var directoryName = _currentDirectoryNumber.ToString();
+            var directoryPath = System.IO.Path.Combine(_configManager.DestinationDirectoryPath, directoryName);
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+            var fileCount = Directory.GetFiles(directoryPath).Length;
+            _runningTotal = fileCount;
             processedMessage.LogMessages.Add($"Page {pageNumber} content:");
             processedMessage.LogMessages.Add($"Total items in page: {page.Extracted.TotalItems}");
+            if(page.Extracted.IsPersonalized == true)
+            {
+                processedMessage.WarningMessages.Add($"Personalization: The file will be created in the output file. Please review manualy for client needs. On page {pageNumber}");
 
-            foreach(var item in page.Extracted.Items)
+            }
+            foreach (var item in page.Extracted.Items)
             {
                 var color = item.Color;
                 var skuCode = item.Sku;
                 var quantity = item.Quantity;
                 var size = item.Size;
                 string fontColor = null;
-
+                
                 if (!string.IsNullOrEmpty(color))
                 {
                     var normalizedColor = color.Replace("\u00A0", " ").Trim();
@@ -60,7 +73,7 @@ namespace ShipmentPdfReader.Services.Pdf
                 if (string.IsNullOrEmpty(fontColor))
                 {
                     pngFiles = Directory.GetFiles(_configManager.SourceDirectoryPath, skuCode + "*.png");
-                    processedMessage.WarningMessages.Add($"WARNING: Font color for Sku Code {skuCode} is missing. All colors will be considered.");
+                    processedMessage.WarningMessages.Add($"WARNING: Font color for Sku Code {skuCode} is missing. All colors will be considered. Please Delete the unwanted file one manualy on page {pageNumber}.");
                 }
                 else
                 {
@@ -70,7 +83,7 @@ namespace ShipmentPdfReader.Services.Pdf
                     pngFiles = allFiles.Where(file => file.ToUpperInvariant().Contains(fontColor.ToUpperInvariant()));
                     if (!pngFiles.Any())
                     {
-                        processedMessage.WarningMessages.Add($"WARNING: Missing file with {fontColor} font color for Sku Code {skuCode} on page {pageNumber}. !!!!!!!");
+                        processedMessage.WarningMessages.Add($"WARNING: Missing file with {fontColor} font color for Sku Code {skuCode} on page {pageNumber}.");
                     }
                 }
 
@@ -167,7 +180,7 @@ namespace ShipmentPdfReader.Services.Pdf
                     }
                     else
                     {
-                        processedMessage.WarningMessages.Add($"WARNING: No descriptor (FRONT|BACK|POCKET|SLEEVE) found SKU Code {skuCode} on page {pageNumber}. There will a 0 as size value, edit file name manually");
+                        processedMessage.WarningMessages.Add($"WARNING: No descriptor (FRONT|BACK|POCKET|SLEEVE) found SKU Code {skuCode} on page {pageNumber}. There will be a 0 as size value, edit file name manually");
                     }
 
                     string destinationFileName;
@@ -193,18 +206,40 @@ namespace ShipmentPdfReader.Services.Pdf
                     }
 
                     var destinationPath = System.IO.Path.Combine(_configManager.DestinationDirectoryPath, destinationFileName);
-                    var iteration = 0;
-                    while (File.Exists(destinationPath))
+
+                    for (int i = 0; i < quantity; i++)
                     {
-                        destinationFileName = $"{pageNumber}{descriptor}-{sizeValue}-{color}{iteration}.png";
-                        destinationPath = System.IO.Path.Combine(_configManager.DestinationDirectoryPath, destinationFileName);
-                        iteration++;
+                        destinationPath = GetDestinationPath(pageNumber, descriptor, sizeValue, fontColor); 
+                        File.Copy(file, destinationPath);
                     }
-                    File.Copy(file, destinationPath);
                 }
                 processedMessage.LogMessages.Add("-");
             }
+            // After processing all items for the page:
+            if (_runningTotal > 25)
+            {
+                _currentDirectoryNumber++;
+                _runningTotal = 0; // Reset the running total
+            }
+        }
 
+        private string GetDestinationPath(int pageNumber, string descriptor, float sizeValue, string fontColor)
+        {
+            var directoryName = _currentDirectoryNumber.ToString();
+            var directoryPath = System.IO.Path.Combine(_configManager.DestinationDirectoryPath, directoryName);
+
+            var destinationFileName = $"{pageNumber}{descriptor}-{sizeValue}-{fontColor}.png";
+            var iteration = 0;
+            var destinationPath = System.IO.Path.Combine(directoryPath, destinationFileName);
+
+            while (File.Exists(destinationPath))
+            {
+                iteration++;
+                destinationFileName = $"{pageNumber}{descriptor}-{sizeValue}-{fontColor}{iteration}.png";
+                destinationPath = System.IO.Path.Combine(directoryPath, destinationFileName);
+            }
+
+            return destinationPath;
         }
         private static SizeInfo CompareSizes(string content, List<SizeInfo> sizes)
         {
@@ -222,16 +257,13 @@ namespace ShipmentPdfReader.Services.Pdf
                 int distance = LevenshteinDistance(normalizedContent, normalizedSize);
                 if (distance <= 2)
                 {
-                    // Custom logic to ensure they are logically the same size
                     string[] contentParts = normalizedContent.Split(new[] { '-', ' ' }, StringSplitOptions.RemoveEmptyEntries);
                     string[] sizeParts = normalizedSize.Split(new[] { '-', ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
                     if (contentParts.Length > 1 && sizeParts.Length > 1)
                     {
-                        // Check that the prefix (e.g., "Unisex") is the same
                         if (contentParts[0].Equals(sizeParts[0], StringComparison.OrdinalIgnoreCase))
                         {
-                            // The suffix should also match exactly in this case
                             if (contentParts[1].Equals(sizeParts[1], StringComparison.OrdinalIgnoreCase))
                             {
                                 return sizeInfo;
@@ -241,12 +273,11 @@ namespace ShipmentPdfReader.Services.Pdf
                 }
             }
 
-            return null;  // Return null if no match is found
+            return null; 
         }
 
         private static string NormalizeSize(string size)
         {
-            // Remove soft hyphens and extra spaces, and convert to lower case for easier comparison
             if (string.IsNullOrEmpty(size))
             {
                 Console.WriteLine($"WARNING: Check the size manually, there is something wrong."); //TODO: WTF
