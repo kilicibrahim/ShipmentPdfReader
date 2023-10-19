@@ -33,6 +33,8 @@ namespace ShipmentPdfReader.ViewModels
             }
             PngExtractor pngExtractor = new PngExtractor();
             pngExtractor.CreatePngs(extractedPagesData);
+            WeakReferenceMessenger.Default.Send(new Messages("PNGs created successfully!"));
+
             return Task.CompletedTask;
         }
 
