@@ -30,7 +30,7 @@ namespace ShipmentPdfReader.Services.Pdf
             return pagesData;
         }
 
-        private ExtractedData ExtractedPage(KeyValuePair<int, string> page) //TO DO: Write file
+        private ExtractedData ExtractedPage(KeyValuePair<int, string> page)
         {
             var extractedData = new ExtractedData();
             var text = page.Value;
@@ -62,7 +62,7 @@ namespace ShipmentPdfReader.Services.Pdf
                 var quantityRegex = new Regex(@"^\d{1,2}( \d{1,2})?$", RegexOptions.Multiline);
                 var quantitymatches = quantityRegex.Matches(line);
 
-                var saMatch = Regex.Matches(line, @"(SA|CC|KT|SK|F)\d{4}|(AL|T|X)\d{3}|(kuz)\d{2}|(kuz)\d{3}");
+                var saMatch = Regex.Matches(line, @"(SA|CC|KT|SK|F)\d{4}|(AL|T|X|SM)\d{3}|(kuz)\d{2}|(kuz)\d{3}");
                 var orderMatch = Regex.Match(line, @"­\s*(\d+)$");
                 if (orderMatch.Success)
                 {

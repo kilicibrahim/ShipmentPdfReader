@@ -6,9 +6,9 @@ using System.Diagnostics;
 
 namespace ShipmentPdfReader
 {
-    public partial class DetailPage : ContentPage
+    public partial class PngDetailPage : ContentPage
     {
-        public DetailPage(ExtractedData item)
+        public PngDetailPage(Item item)
         {
             InitializeComponent();
             BindingContext = item;
@@ -17,11 +17,6 @@ namespace ShipmentPdfReader
         private void OnCloseClicked(object sender, EventArgs e)
         {
             this.Navigation.PopAsync();
-        }
-        private async void OnItemTapped(object sender, EventArgs e)
-        {
-            var item = (Item)((Grid)sender).BindingContext;
-            await Navigation.PushAsync(new PngDetailPage(item));
         }
     }
 }

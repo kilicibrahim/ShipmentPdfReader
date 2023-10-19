@@ -30,7 +30,6 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
-		<TargetFrameworks />
 
 	<!--</PropertyGroup> this is just for windows cli builds, the PackageCertificateThumbprint is temp so no problems, wtf is that  <TargetFrameworks /> tag where did it come from I don't understand this f-ing csproj
   <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' and '$(Configuration)' == 'Release'">
@@ -73,6 +72,10 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
 	  <PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.5" Condition="'$(TargetFramework)' == 'net7.0-windows10.0.19041.0'" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	  <PackageReference Include="SonarAnalyzer.CSharp" Version="9.12.0.78982">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
 	  <PackageReference Include="Xamarin.Essentials" Version="1.8.0" />
 	</ItemGroup>
 
@@ -97,6 +100,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Views\PngDetailPage.xaml.cs">
+	    <DependentUpon>PngDetailPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\DetailPage.xaml.cs">
 	    <DependentUpon>DetailPage.xaml</DependentUpon>
 	  </Compile>
@@ -118,6 +124,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Views\PngDetailPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\DetailPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

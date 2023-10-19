@@ -23,27 +23,28 @@ namespace ShipmentPdfReader.Services.Pdf
             foreach(var page in pagesData)
             {
                 var processedMessage = new ProcessedData();
-                ProcessPage(processedMessage, page);
+                page.Extracted.Items = ProcessPage(processedMessage, page);
                 page.Processed = processedMessage;
             }
 
             return pagesData;
         }
 
-        private void ProcessPage(ProcessedData processedMessage, PageData page)
+        private List<Item> ProcessPage(ProcessedData processedMessage, PageData page)
         {
+            List<Item> processedItems = new List<Item>();
             var pageNumber = page.PageNumber;
-            var directoryName = _currentDirectoryNumber.ToString();
-            var directoryPath = System.IO.Path.Combine(_configManager.DestinationDirectoryPath, directoryName);
-            if (!Directory.Exists(directoryPath))
-            {
-                Directory.CreateDirectory(directoryPath);
-            }
-            var fileCount = Directory.GetFiles(directoryPath).Length;
-            _runningTotal = fileCount;
+            //var directoryName = _currentDirectoryNumber.ToString();
+            //var directoryPath = System.IO.Path.Combine(_configManager.DestinationDirectoryPath, directoryName);
+            //if (!Directory.Exists(directoryPath))
+            //{
+            //    Directory.CreateDirectory(directoryPath);
+            //}
+            //var fileCount = Directory.GetFiles(directoryPath).Length;
+            //_runningTotal = fileCount;
             processedMessage.LogMessages.Add($"Page {pageNumber} content:");
             processedMessage.LogMessages.Add($"Total items in page: {page.Extracted.TotalItems}");
-            if(page.Extracted.IsPersonalized == true)
+            if(page.Extracted.IsPersonalized)
             {
                 processedMessage.WarningMessages.Add($"Personalization: The file will be created in the output file. Please review manualy for client needs. On page {pageNumber}");
 
@@ -96,12 +97,9 @@ namespace ShipmentPdfReader.Services.Pdf
                     // Check if color contains 'comfort' This is JUST FOR HULKI NOT RASIT
                     if (containsCC)
                     {
-                        descriptor = "-COMFORT_" + descriptor;
+                        descriptor = "COMFORT_" + descriptor;
                     }
-                    else
-                    {
-                        descriptor = "-" + descriptor;
-                    }
+
 
                     float sizeValue = 0;
                     SizeInfo matchedSizeInfo = CompareSizes(size, _configManager.AcceptableSizes);
@@ -180,67 +178,66 @@ namespace ShipmentPdfReader.Services.Pdf
                     }
                     else
                     {
-                        processedMessage.WarningMessages.Add($"WARNING: No descriptor (FRONT|BACK|POCKET|SLEEVE) found SKU Code {skuCode} on page {pageNumber}. There will be a 0 as size value, edit file name manually");
+                        processedMessage.WarningMessages.Add($"WARNING: No descriptor (FRONT|BACK|POCKET|SLEEVE) found SKU Code {skuCode} on page {pageNumber}. Edit manually!");
                     }
 
                     string destinationFileName;
 
                     if (size != null && color != null)
                     {
-                        destinationFileName = $"{pageNumber}{descriptor}-{sizeValue}-{fontColor}.png";
+                        destinationFileName = $"{pageNumber}-{descriptor}-{sizeValue}-{fontColor}.png";
                     }
                     else if (size == null && color != null)
                     {
-                        destinationFileName = $"{pageNumber}{descriptor}-MISSING_SIZE-{fontColor}.png";
+                        destinationFileName = $"{pageNumber}-{descriptor}-MISSING_SIZE-{fontColor}.png";
                         processedMessage.WarningMessages.Add($"WARNING: Size missing for SA Code {skuCode} on page {pageNumber}.");
                     }
                     else if (size != null && color == null)
                     {
-                        destinationFileName = $"{pageNumber}{descriptor}-{sizeValue}-MISSING_COLOR.png";
+                        destinationFileName = $"{pageNumber}-{descriptor}-{sizeValue}-MISSING_COLOR.png";
                         processedMessage.WarningMessages.Add($"WARNING: Color missing for SA Code {skuCode} on page {pageNumber}.");
                     }
                     else
                     {
-                        destinationFileName = $"{pageNumber}{descriptor}-MISSING_SIZE-MISSING_COLOR.png";
+                        destinationFileName = $"{pageNumber}-{descriptor}-MISSING_SIZE-MISSING_COLOR.png";
                         processedMessage.WarningMessages.Add($"WARNING: Both size and color missing for SA Code {skuCode} on page {pageNumber}.");
                     }
 
-                    var destinationPath = System.IO.Path.Combine(_configManager.DestinationDirectoryPath, destinationFileName);
-
-                    for (int i = 0; i < quantity; i++)
+                    if (quantity == null)
                     {
-                        destinationPath = GetDestinationPath(pageNumber, descriptor, sizeValue, fontColor); 
-                        File.Copy(file, destinationPath);
+                        processedMessage.WarningMessages.Add($"WARNING: Quantity is null there will be 0 as quantity on this item on page {pageNumber}.");
                     }
+                    if (quantity > 20)
+                    {
+                        processedMessage.WarningMessages.Add($"WARNING: Quantity is {quantity}. Seems bigger than usual, check and edit on page {pageNumber}.");
+
+                    }
+
+                    var destinationPath = System.IO.Path.Combine(_configManager.DestinationDirectoryPath, destinationFileName);
+                    ProcessedItem temp = new ProcessedItem
+                    {
+                        Descriptor = descriptor,
+                        FontColor = fontColor,
+                        SizeValue = sizeValue
+                    };
+                    item.ProcessedItems.Add(temp);
+                    //for (int j = 0; j < quantity; j++)
+                    //{
+                    //    destinationPath = GetDestinationPath(pageNumber, descriptor, sizeValue, fontColor); 
+                    //    File.Copy(file, destinationPath);
+                    //}
                 }
-                processedMessage.LogMessages.Add("-");
+                processedItems.Add(item);
             }
             // After processing all items for the page:
-            if (_runningTotal > 25)
-            {
-                _currentDirectoryNumber++;
-                _runningTotal = 0; // Reset the running total
-            }
+            //if (_runningTotal > 25)
+            //{
+            //    _currentDirectoryNumber++;
+            //    _runningTotal = 0; // Reset the running total
+            //}
+            return processedItems;
         }
 
-        private string GetDestinationPath(int pageNumber, string descriptor, float sizeValue, string fontColor)
-        {
-            var directoryName = _currentDirectoryNumber.ToString();
-            var directoryPath = System.IO.Path.Combine(_configManager.DestinationDirectoryPath, directoryName);
-
-            var destinationFileName = $"{pageNumber}{descriptor}-{sizeValue}-{fontColor}.png";
-            var iteration = 0;
-            var destinationPath = System.IO.Path.Combine(directoryPath, destinationFileName);
-
-            while (File.Exists(destinationPath))
-            {
-                iteration++;
-                destinationFileName = $"{pageNumber}{descriptor}-{sizeValue}-{fontColor}{iteration}.png";
-                destinationPath = System.IO.Path.Combine(directoryPath, destinationFileName);
-            }
-
-            return destinationPath;
-        }
         private static SizeInfo CompareSizes(string content, List<SizeInfo> sizes)
         {
             string normalizedContent = NormalizeSize(content);

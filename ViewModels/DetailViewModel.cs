@@ -14,7 +14,11 @@ namespace ShipmentPdfReader.ViewModels
             set => SetProperty(ref _data, value);
         }
         public ICommand ApplyChangesCommand => new Command(ApplyChanges);
-
+        public ICommand NavigateToPngDetailPageCommand => new Command<Item>(async (data) => await NavigateToPngDetailPage(data));
+        private async Task NavigateToPngDetailPage(Item data)
+        {
+            await Application.Current.MainPage.Navigation.PushAsync(new PngDetailPage(data));
+        }
         private void ApplyChanges(object obj)
         {
             throw new NotImplementedException();

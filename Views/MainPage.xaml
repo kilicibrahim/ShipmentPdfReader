@@ -3,24 +3,41 @@
        xmlns:local="clr-namespace:ShipmentPdfReader"
        x:Class="ShipmentPdfReader.MainPage">
 
-    <Tab Title="Home" >
-        <ShellContent ContentTemplate="{DataTemplate local:HomePage}" />
-    </Tab>
-
-    <Tab Title="Size Info" >
-        <ShellContent ContentTemplate="{DataTemplate local:SizeInfoPage}" />
-    </Tab>
-
-    <Tab Title="Color Info">
-        <ShellContent ContentTemplate="{DataTemplate local:ColorInfoPage}" />
-    </Tab>
-
-    <Tab Title="Special SKU">
-        <ShellContent ContentTemplate="{DataTemplate local:SpecialSkuCodeInfoPage}" />
-    </Tab>
+    <Shell.Resources>
+        <ResourceDictionary>
+            <Style TargetType="TabBar">
+                <Setter Property="Shell.TabBarBackgroundColor"
+                        Value="#dfdfde" />
+                <!--<Setter Property="Shell.TabBarTitleColor"
+                        Value="#d9bf77" />
+                <Setter Property="Shell.TabBarUnselectedColor"
+                        Value="#6a0572" />-->
+            </Style>
+        </ResourceDictionary>
+    </Shell.Resources>
     
-    <Tab Title="Settings">
-        <ShellContent ContentTemplate="{DataTemplate local:SettingsPage}" />
-    </Tab>
+    <TabBar>
+
+        <Tab Title="Home">
+            <ShellContent ContentTemplate="{DataTemplate local:HomePage}" />
+        </Tab>
+
+
+        <Tab Title="Size Info">
+            <ShellContent ContentTemplate="{DataTemplate local:SizeInfoPage}" />
+        </Tab>
+
+        <Tab Title="Color Info">
+            <ShellContent ContentTemplate="{DataTemplate local:ColorInfoPage}" />
+        </Tab>
+
+        <Tab Title="Special SKU">
+            <ShellContent ContentTemplate="{DataTemplate local:SpecialSkuCodeInfoPage}" />
+        </Tab>
+    
+        <Tab Title="Settings">
+            <ShellContent ContentTemplate="{DataTemplate local:SettingsPage}" />
+        </Tab>
+    </TabBar>
 
 </Shell>

@@ -1,0 +1,133 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ShipmentPdfReader.PngDetailPage"
+             BackgroundColor="#1e1e1e">
+    <ScrollView>
+        <StackLayout Padding="20">
+            <Label Text="Details" FontAttributes="Bold" FontSize="Large" TextColor="#e3e3e3" HorizontalTextAlignment="Center"/>
+
+            <Label Text="{Binding Quantity, StringFormat='Quantity: {0}'}" FontAttributes="Bold" TextColor="#e3e3e3"/>
+            <Label Text="{Binding Sku, StringFormat='Sku: {0}'}" FontAttributes="Bold" TextColor="#e3e3e3"/>
+            <Label Text="{Binding Size, StringFormat='Size: {0}'}" FontAttributes="Bold" TextColor="#e3e3e3"/>
+            <Label Text="{Binding Color, StringFormat='Color: {0}'}" FontAttributes="Bold" TextColor="#e3e3e3"/>
+
+            <Label Text="Items Details" FontAttributes="Bold" FontSize="Medium" TextColor="#e3e3e3" HorizontalTextAlignment="Center"/>
+            <CollectionView ItemsSource="{Binding ProcessedItems}" Margin="0,10">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" Span="2"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BackgroundColor="#5d5d5d" Padding="10" Margin="5" BorderColor="#3c4042" CornerRadius="15">
+                            <Grid Padding="10" Margin="0,5">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Frame Grid.Row="0" BackgroundColor="#3c4042" BorderColor="Transparent" Padding="10">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label Text="Size in Inches: |" 
+                                               TextColor="#bdc1c6" 
+                                               FontSize="16"
+                                               HorizontalOptions="Start" 
+                                               VerticalOptions="Center"/>
+
+                                        <Entry Grid.Column="1"
+                                               Text="{Binding SizeValue}"  
+                                               TextColor="#bdc1c6" 
+                                               FontSize="16"
+                                               BackgroundColor="#5d5d5d"
+                                               WidthRequest="65"
+                                               HorizontalOptions="Start" 
+                                               VerticalOptions="Center">
+                                            <Entry.Triggers>
+                                                <DataTrigger TargetType="Entry"
+                                                             Binding="{Binding SizeValue}" 
+                                                             Value="{x:Null}">
+                                                    <Setter Property="TextColor" Value="#e82700" />
+                                                </DataTrigger>
+                                            </Entry.Triggers>
+                                        </Entry>
+                                    </Grid>
+                                </Frame>
+                                <Frame Grid.Row="1" BackgroundColor="#3c4042" BorderColor="Transparent" Padding="10">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label Text="Font Color:     |" 
+                                               TextColor="#bdc1c6" 
+                                               FontSize="16"
+                                               HorizontalOptions="Start" 
+                                               VerticalOptions="Center"/>
+
+                                        <Entry Grid.Column="1"
+                                               Text="{Binding FontColor}"  
+                                               TextColor="#bdc1c6" 
+                                               FontSize="16"
+                                               BackgroundColor="#5d5d5d"
+                                               WidthRequest="65"
+                                               HorizontalOptions="Start" 
+                                               VerticalOptions="Center">
+                                            <Entry.Triggers>
+                                                <DataTrigger TargetType="Entry"
+                                                             Binding="{Binding FontColor}" 
+                                                             Value="{x:Null}">
+                                                    <Setter Property="TextColor" Value="#e82700" />
+                                                </DataTrigger>
+                                            </Entry.Triggers>
+                                        </Entry>
+                                    </Grid>
+                                </Frame>
+                                <Frame Grid.Row="2" BackgroundColor="#3c4042" BorderColor="Transparent" Padding="10">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label Text="Descriptor:     |" 
+                                               TextColor="#bdc1c6" 
+                                               FontSize="16"
+                                               HorizontalOptions="Start" 
+                                               VerticalOptions="Center"/>
+
+                                        <Entry Grid.Column="1"
+                                               Text="{Binding Descriptor}"  
+                                               TextColor="#bdc1c6" 
+                                               FontSize="16"
+                                               BackgroundColor="#5d5d5d"
+                                               WidthRequest="200"
+                                               HorizontalOptions="Start" 
+                                               VerticalOptions="Center">
+                                            <Entry.Triggers>
+                                                <DataTrigger TargetType="Entry"
+                                                             Binding="{Binding Descriptor}" 
+                                                             Value="{x:Null}">
+                                                    <Setter Property="TextColor" Value="#e82700" />
+                                                </DataTrigger>
+                                            </Entry.Triggers>
+                                        </Entry>
+                                    </Grid>
+                                </Frame>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Button Text="Close"
+                    Padding="20,10"
+                    WidthRequest="100" 
+                    Clicked="OnCloseClicked"/>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

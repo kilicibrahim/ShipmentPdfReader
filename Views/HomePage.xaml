@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ShipmentPdfReader.HomePage"
              xmlns:local="clr-namespace:ShipmentPdfReader.Converters"
-             BackgroundColor="#f0f0f0">
+             BackgroundColor="#1e1e1e">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -11,7 +11,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto,*,*"
+    <Grid RowDefinitions="Auto,2*"
           ColumnDefinitions="*,*">
 
         <!-- Progress Indicator and Message -->
@@ -26,8 +26,7 @@
         <StackLayout VerticalOptions="FillAndExpand">
             <Label Text="Extracted Orders" 
            BackgroundColor="Transparent" 
-           TextColor="Black" 
-           FontAttributes="Bold" 
+           TextColor="#e3e3e3" 
            FontSize="Large" 
            HorizontalTextAlignment="Center" 
            VerticalTextAlignment="Center"
@@ -36,11 +35,9 @@
         <CollectionView x:Name="ExtractedDataView" 
                 ItemsSource="{Binding ExtractedPagesData}" 
                 VerticalOptions="FillAndExpand"
-                HeightRequest="500"
-                BackgroundColor="#512BD4">
+                HeightRequest="500">
             <CollectionView.Header>
                 <Label Text="Extracted Data" 
-               BackgroundColor="LightGray" 
                TextColor="Black" 
                FontAttributes="Bold" 
                FontSize="Large" 
@@ -54,13 +51,13 @@
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Frame Padding="10" Margin="5" BorderColor="Black" CornerRadius="5" HeightRequest="{Binding Items.Count, Converter={StaticResource CountToHeightConverter}}">
-                        <StackLayout>
+                        <Frame BackgroundColor="#3c4042" Padding="10" Margin="5" BorderColor="#4d4d4d" CornerRadius="5" HeightRequest="175"> <!--HeightRequest="{Binding Items.Count, Converter={StaticResource CountToHeightConverter}}-->
+                            <StackLayout>
                             <StackLayout.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnItemTapped"/>
                             </StackLayout.GestureRecognizers>
-                            <Label Text="{Binding PageNumber}" FontAttributes="Bold"/>
-                            <Label Text="{Binding TotalItems, StringFormat='Total Items: {0}'}" FontAttributes="Bold"/>
+                                <Label TextColor="#bdc1c6" Text="{Binding PageNumber}" FontSize="18" FontAttributes="Bold"/>
+                                <Label TextColor="#bdc1c6" Text="{Binding TotalItems, StringFormat='Total Items: {0}'}" FontSize="16"/>
 
                             <!-- Inner collection with BindableLayout -->
                             <StackLayout BindableLayout.ItemsSource="{Binding Items}" Spacing="10">
@@ -68,10 +65,10 @@
                                     <DataTemplate>
                                         <StackLayout Spacing="4" WidthRequest="200" HeightRequest="250">
                                             <!-- Adjust the WidthRequest as needed -->
-                                            <Label Text="{Binding Quantity, StringFormat='Quantity: {0}'}" FontAttributes="Italic"/>
-                                            <Label Text="{Binding Sku, StringFormat='Sku: {0}'}" FontAttributes="Italic"/>
-                                            <Label Text="{Binding Size, StringFormat='Size: {0}'}" FontAttributes="Italic"/>
-                                            <Label Text="{Binding Color, StringFormat='Color: {0}'}" FontAttributes="Italic"/>
+                                            <Label TextColor="#bdc1c6" Text="{Binding Quantity, StringFormat='Quantity: {0}'}" FontAttributes="Italic"/>
+                                            <Label TextColor="#bdc1c6" Text="{Binding Sku, StringFormat='Sku: {0}'}" FontAttributes="Italic"/>
+                                            <Label TextColor="#bdc1c6" Text="{Binding Size, StringFormat='Size: {0}'}" FontAttributes="Italic"/>
+                                            <Label TextColor="#bdc1c6" Text="{Binding Color, StringFormat='Color: {0}'}" FontAttributes="Italic"/>
 
                                             <!-- Additional Details Section -->
                                             <ScrollView IsVisible="{Binding IsExpanded}" Orientation="Vertical" HeightRequest="100">
@@ -95,15 +92,13 @@
             Grid.Column="1">
             <Label Text="Warnings" 
            BackgroundColor="Transparent" 
-           TextColor="Black" 
-           FontAttributes="Bold" 
+           TextColor="#e3e3e3" 
            FontSize="Large" 
            HorizontalTextAlignment="Center" 
            VerticalTextAlignment="Center"
            HeightRequest="50"/>
             <CollectionView x:Name="WarningLog" Grid.Column="1" 
             ItemsSource="{Binding WarningMessages}" 
-            BackgroundColor="#fed733"
             VerticalOptions="FillAndExpand"
             HeightRequest="500">
             <CollectionView.Header>
@@ -112,25 +107,32 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <ContentView>
-                        <StackLayout Orientation="Horizontal">
-                                <CheckBox IsChecked="false" />
-                                <Label Text="{Binding}" FontAttributes="Bold" 
-                        TextColor="Black" 
-                        HorizontalOptions="FillAndExpand" 
-                        VerticalOptions="Center"/>
-                        </StackLayout>
-                    </ContentView>
+                            <Frame BackgroundColor="#3c4042" BorderColor="Transparent" Padding="10">
+                                <StackLayout Orientation="Horizontal">
+                                    <CheckBox IsChecked="false" />
+                                    <Label Text="{Binding}"  
+                                    TextColor="#bdc1c6" 
+                                    FontSize="16"
+                                    HorizontalOptions="FillAndExpand" 
+                                    VerticalOptions="Center"/>
+                                </StackLayout>
+                            </Frame>
+                        </ContentView>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
         </StackLayout>
 
 
-
-        <!-- Control Button -->
-        <StackLayout Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" Spacing="20" Padding="10"
+        <StackLayout Grid.Row="2" Grid.ColumnSpan="2" Orientation="Vertical" Spacing="10" Padding="5"
                      HorizontalOptions="Center">
-            <!-- Centering StackLayout -->
+            <Button x:Name="CreatePngsButton"
+                    Text="Create Pngs"
+                    Padding="20,10"
+                    WidthRequest="150" 
+                    HeightRequest="50" 
+                    Command="{Binding CreatePngsCommand}"
+                    HorizontalOptions="Center"/>
             <Button x:Name="StartButton"
                     Text="Start Processing"
                     Padding="20,10"
@@ -138,7 +140,6 @@
                     HeightRequest="50" 
                     Command="{Binding StartProcessingCommand}"
                     HorizontalOptions="Center"/>
-            <!-- Centering Button -->
         </StackLayout>
     </Grid>
 </ContentPage>

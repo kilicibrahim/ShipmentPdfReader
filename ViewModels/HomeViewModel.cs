@@ -11,12 +11,31 @@ namespace ShipmentPdfReader.ViewModels
     public class HomeViewModel : BaseViewModel
     {
         public Command StartProcessingCommand {  get; }
+        public Command CreatePngsCommand
+        {
+            get;
+        }
 
         [Obsolete]
         public HomeViewModel()
         {
             StartProcessingCommand = new Command(async () => await StartProcessing());
+            CreatePngsCommand = new Command(async () => await CreatePngs());
         }
+
+        private Task CreatePngs()
+        {
+            var extractedPagesData = ExtractedPagesData;
+            if(extractedPagesData == null)
+            {
+                WeakReferenceMessenger.Default.Send(new Messages("You need to Process the Pdf first."));
+                return Task.CompletedTask;
+            }
+            PngExtractor pngExtractor = new PngExtractor();
+            pngExtractor.CreatePngs(extractedPagesData);
+            return Task.CompletedTask;
+        }
+
         public ICommand ToggleExpandCommand => new Command<Item>(item =>
         {
             item.IsExpanded = !item.IsExpanded;
@@ -103,6 +122,8 @@ namespace ShipmentPdfReader.ViewModels
 
             try
             {
+                ExtractedPagesData.Clear();
+                WarningMessages.Clear();
                 PdfProcessor pdfProcessor = new PdfProcessor(_selectedFilePath);
                 var processedPageData = pdfProcessor.ProcessPdf(); 
 
@@ -118,13 +139,11 @@ namespace ShipmentPdfReader.ViewModels
                         }
 
                     }
-
-
                 });
             }
             catch (Exception ex)
             {
-                WeakReferenceMessenger.Default.Send(new Messages($"Failed to process the PDF. Please try again or contact support! With the following message: {ex}"));
+                WeakReferenceMessenger.Default.Send(new Messages($"Failed to process the PDF. Please try again or contact support, with the following message: {ex}"));
             }
 
             return;

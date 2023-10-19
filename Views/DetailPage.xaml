@@ -1,46 +1,125 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ShipmentPdfReader.DetailPage"
-             BackgroundColor="#f0f0f0">
+             BackgroundColor="#1e1e1e">
     <ScrollView>
         <StackLayout Padding="20">
-            <Label Text="Details" FontAttributes="Bold" FontSize="Large" HorizontalTextAlignment="Center"/>
+            <Label Text="Details" FontAttributes="Bold" FontSize="Large" TextColor="#e3e3e3" HorizontalTextAlignment="Center"/>
 
-            <Label Text="{Binding PageNumber, StringFormat='Page Number: {0}'}" FontAttributes="Bold"/>
-            <Label Text="{Binding TotalItems, StringFormat='Total Items: {0}'}" FontAttributes="Bold"/>
+            <Label Text="{Binding PageNumber, StringFormat='Page Number: {0}'}" FontAttributes="Bold" TextColor="#e3e3e3"/>
+            <Label Text="{Binding TotalItems, StringFormat='Total Items: {0}'}" FontAttributes="Bold" TextColor="#e3e3e3"/>
 
-            <Label Text="Items Details" FontAttributes="Bold" FontSize="Medium" HorizontalTextAlignment="Center"/>
+            <Label Text="Items Details" FontAttributes="Bold" FontSize="Medium" TextColor="#e3e3e3" HorizontalTextAlignment="Center"/>
             <CollectionView ItemsSource="{Binding Items}" Margin="0,10">
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Orientation="Vertical" Span="2"/>
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Frame  Padding="10" Margin="5" BorderColor="Black" CornerRadius="15">
-
-                            <Grid Padding="10"  Margin="0,5">
+                        <Frame BackgroundColor="#5d5d5d" Padding="10" Margin="5" BorderColor="#3c4042" CornerRadius="15">
+                            <Grid Padding="10" Margin="0,5">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnItemTapped"/>
+                                </Grid.GestureRecognizers>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <Entry BackgroundColor="#fed733" Text="{Binding Quantity}" Grid.Row="0" Placeholder="Quantity" PlaceholderColor="#e82700"/>
-                                <Entry BackgroundColor="#f0f0f0" Text="{Binding Sku}" Grid.Row="1" Placeholder="Sku" PlaceholderColor="#e82700"/>
-                                <Entry BackgroundColor="#fed733" Text="{Binding Size}" Grid.Row="2" Placeholder="Size" PlaceholderColor="#e82700"/>
-                                <Entry BackgroundColor="#f0f0f0" Text="{Binding Color}" Grid.Row="3" Placeholder="Color" PlaceholderColor="#e82700"/>
+
+                                <!-- Quantity Editable -->
+                                <Frame Grid.Row="0" BackgroundColor="#3c4042" BorderColor="Transparent" Padding="10">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label Text="Quantity: |" 
+                                               TextColor="#bdc1c6" 
+                                               FontSize="16"
+                                               HorizontalOptions="Start" 
+                                               VerticalOptions="Center"/>
+
+                                        <Entry Grid.Column="1"
+                                               Text="{Binding Quantity}"  
+                                               TextColor="#bdc1c6" 
+                                               FontSize="16"
+                                               WidthRequest="65"
+                                               BackgroundColor="#5d5d5d"
+                                               HorizontalOptions="Start" 
+                                               VerticalOptions="Center">
+                                            <Entry.Triggers>
+                                                <DataTrigger TargetType="Entry"
+                                                             Binding="{Binding Quantity}" 
+                                                             Value="{x:Null}">
+                                                    <Setter Property="TextColor" Value="#e82700" />
+                                                </DataTrigger>
+                                            </Entry.Triggers>
+                                        </Entry>
+                                    </Grid>
+                                </Frame>
+
+                                <!-- Sku Label -->
+                                <Frame Grid.Row="1" BackgroundColor="#3c4042" BorderColor="Transparent" Padding="10">
+                                    <Label Text="{Binding Sku, StringFormat='Sku: {0}'}"  
+                                           TextColor="#bdc1c6" 
+                                           FontSize="16"
+                                           HorizontalOptions="FillAndExpand" 
+                                           VerticalOptions="Center">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label"
+                                                         Binding="{Binding Sku}" 
+                                                         Value="{x:Null}">
+                                                <Setter Property="TextColor" Value="#e82700" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                </Frame>
+
+                                <!-- Size Label -->
+                                <Frame Grid.Row="2" BackgroundColor="#3c4042" BorderColor="Transparent" Padding="10">
+                                    <Label Text="{Binding Size, StringFormat='Size: {0}'}"  
+                                           TextColor="#bdc1c6" 
+                                           FontSize="16"
+                                           LineBreakMode="NoWrap"
+                                           HorizontalOptions="FillAndExpand" 
+                                           VerticalOptions="Center">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label"
+                                                         Binding="{Binding Size}" 
+                                                         Value="{x:Null}">
+                                                <Setter Property="TextColor" Value="#e82700" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                </Frame>
+
+                                <!-- Color Label -->
+                                <Frame Grid.Row="3" BackgroundColor="#3c4042" BorderColor="Transparent" Padding="10">
+                                    <Label Text="{Binding Color, StringFormat='Color: {0}'}"  
+                                            TextColor="#bdc1c6" 
+                                            FontSize="16"
+                                            LineBreakMode="NoWrap"
+                                            HorizontalOptions="FillAndExpand" 
+                                            VerticalOptions="Center">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label"
+                                                            Binding="{Binding Color}" 
+                                                            Value="{x:Null}">
+                                                <Setter Property="TextColor" Value="#e82700" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                </Frame>
                             </Grid>
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-
-            <Button Text="Apply Changes"
-                    Padding="20,10"
-                    WidthRequest="150" 
-                    BackgroundColor="#228b22"
-                    Command="{Binding ApplyChangesCommand}"/>
-
 
             <Button Text="Close"
                     Padding="20,10"

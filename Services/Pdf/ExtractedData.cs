@@ -9,7 +9,6 @@ namespace ShipmentPdfReader.Services.Pdf
         public int TotalItems { get; set; }
         public int PageNumber { get; set; }
         public bool IsPersonalized { get; set; }
-
         public ExtractedData()
         {
             Items = new List<Item>();
@@ -44,7 +43,22 @@ namespace ShipmentPdfReader.Services.Pdf
     {
         public List<string> LogMessages { get; set; } = new List<string>();
         public List<string> WarningMessages { get; set; } = new List<string>();
+    }
 
+    public class ProcessedItem
+    {
+        public string Descriptor
+        {
+            get; set; 
+        }
+        public string FontColor
+        {
+            get; set;
+        }
+        public float SizeValue
+        {
+            get; set;
+        }
     }
 
     public class PageData
@@ -80,6 +94,7 @@ namespace ShipmentPdfReader.Services.Pdf
         public string Sku { get; set; }
         public string Size { get; set; }
         public string Color { get; set; }
+        public List<ProcessedItem> ProcessedItems { get; set; } = new List<ProcessedItem>();
 
         private bool _isExpanded;
         public bool IsExpanded
