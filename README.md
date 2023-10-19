@@ -42,7 +42,7 @@ Users can customize various extraction and display settings, such as acceptable 
 
 ### Installation
 1. Clone this repository:
-git clone https://github.com/YourUsername/ShipmentPdfReader.git
+git clone https://github.com/kilicibrahim/ShipmentPdfReader.git
 
 vbnet
 Copy code
