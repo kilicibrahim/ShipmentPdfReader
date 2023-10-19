@@ -17,13 +17,11 @@ namespace ShipmentPdfReader.Services.Pdf
             var documents = new Dictionary<int, string>();
             try
             {
-                using (PdfReader reader = new PdfReader(FilePath))
+                using PdfReader reader = new(FilePath);
+                for (int page = 1; page <= reader.NumberOfPages; page++)
                 {
-                    for (int page = 1; page <= reader.NumberOfPages; page++)
-                    {
-                        var text = PdfTextExtractor.GetTextFromPage(reader, page, new LocationTextExtractionStrategy());
-                        documents.Add(page, text);
-                    }
+                    var text = PdfTextExtractor.GetTextFromPage(reader, page, new LocationTextExtractionStrategy());
+                    documents.Add(page, text);
                 }
             }
             catch (IOException ex)

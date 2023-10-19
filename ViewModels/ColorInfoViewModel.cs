@@ -5,7 +5,7 @@ namespace ShipmentPdfReader.ViewModels
 {
     public class ColorInfoViewModel : BaseInfoViewModel<ColorInfo>
     {
-        private ConfigurationManager _configManager;
+        private readonly ConfigurationManager _configManager;
 
         public ColorInfoViewModel(List<ColorInfo> acceptableColors, ConfigurationManager configManager)
             : base(acceptableColors, () => new ColorInfo())

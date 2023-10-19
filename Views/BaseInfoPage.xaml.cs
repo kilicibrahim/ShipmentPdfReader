@@ -24,12 +24,6 @@ namespace ShipmentPdfReader
         {
             DisplayAlert("Message", message.Value, "OK");
         }
-
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-        }
-
         protected override void OnDisappearing()
         {
             base.OnDisappearing();

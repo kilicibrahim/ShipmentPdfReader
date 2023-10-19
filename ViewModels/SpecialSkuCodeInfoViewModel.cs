@@ -35,8 +35,7 @@ namespace ShipmentPdfReader.ViewModels
                 entry.SizeValue.HasValue ||
                 entry.BackValue.HasValue ||
                 entry.PocketValue.HasValue ||
-                entry.SleeveValue.HasValue ||
-                entry.IsColorSelectionManual == true;
+                entry.SleeveValue.HasValue;
 
             return isSkuCodeValid && isAtLeastOneOtherPropertySet;
         }

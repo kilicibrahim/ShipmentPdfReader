@@ -130,7 +130,6 @@ namespace ShipmentPdfReader.Services.Pdf
                                         itemData.Sizes.Add(completeSize);
                                         partialSizeBuilder.Clear();
                                     }
-                                    completeSize = null;
                                 }
                             }
                         }
@@ -173,7 +172,7 @@ namespace ShipmentPdfReader.Services.Pdf
                 .Replace("\u00A0", " ")  // Replace non-breaking spaces with regular spaces
                 .ToLower();  // Convert to lower case
 
-            return sizes.Any(sizeInfo =>
+            return sizes.Exists(sizeInfo =>
             {
                 // Normalize the size
                 string normalizedSize = sizeInfo.Size

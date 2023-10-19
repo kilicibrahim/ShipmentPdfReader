@@ -11,8 +11,6 @@ namespace ShipmentPdfReader.Services.Pdf
     internal class DataProcessor
     {
         private readonly ConfigurationManager _configManager;
-        private int _currentDirectoryNumber = 1;
-        private int? _runningTotal = 0;
         public DataProcessor()
         {
             _configManager = ConfigurationManager.Instance;
@@ -34,14 +32,7 @@ namespace ShipmentPdfReader.Services.Pdf
         {
             List<Item> processedItems = new List<Item>();
             var pageNumber = page.PageNumber;
-            //var directoryName = _currentDirectoryNumber.ToString();
-            //var directoryPath = System.IO.Path.Combine(_configManager.DestinationDirectoryPath, directoryName);
-            //if (!Directory.Exists(directoryPath))
-            //{
-            //    Directory.CreateDirectory(directoryPath);
-            //}
-            //var fileCount = Directory.GetFiles(directoryPath).Length;
-            //_runningTotal = fileCount;
+
             processedMessage.LogMessages.Add($"Page {pageNumber} content:");
             processedMessage.LogMessages.Add($"Total items in page: {page.Extracted.TotalItems}");
             if(page.Extracted.IsPersonalized)
@@ -60,7 +51,7 @@ namespace ShipmentPdfReader.Services.Pdf
                 if (!string.IsNullOrEmpty(color))
                 {
                     var normalizedColor = color.Replace("\u00A0", " ").Trim();
-                    fontColor = _configManager.AcceptableColors.FirstOrDefault(cp => cp.BackgroundColor.Replace("\u00A0", " ").Trim().ToLower() == normalizedColor)?.FontColor;
+                    fontColor = _configManager.AcceptableColors.Find(cp => cp.BackgroundColor.Replace("\u00A0", " ").Trim().ToLower() == normalizedColor)?.FontColor;
                 }
                 bool containsCC = skuCode.Contains("CC");
 
@@ -68,7 +59,7 @@ namespace ShipmentPdfReader.Services.Pdf
                 processedMessage.LogMessages.Add(skuCode);
                 processedMessage.LogMessages.Add(size);
                 processedMessage.LogMessages.Add(color);
-                var specialSku = _configManager.SpecialSkuCodes.FirstOrDefault(s => s.SkuCode == skuCode);
+                var specialSku = _configManager.SpecialSkuCodes.Find(s => s.SkuCode == skuCode);
 
                 IEnumerable<string> pngFiles;
                 if (string.IsNullOrEmpty(fontColor))
@@ -106,74 +97,50 @@ namespace ShipmentPdfReader.Services.Pdf
 
                     if (descriptor.Contains("POCKET"))
                     {
-                        if (matchedSizeInfo != null)
+                        if (matchedSizeInfo != null && matchedSizeInfo.PocketValue != null)
                         {
-                            if (matchedSizeInfo.PocketValue != null)
-                            {
-                                sizeValue = (float)matchedSizeInfo.PocketValue;
-                            }
+                           sizeValue = (float)matchedSizeInfo.PocketValue;
                         }
 
-                        if (specialSku != null)
+                        if (specialSku != null && specialSku.PocketValue != null)
                         {
-                            if (specialSku.PocketValue != null)
-                            {
-                                sizeValue = (float)specialSku.PocketValue;
-                            }
+                           sizeValue = (float)specialSku.PocketValue;
                         }
                     }
                     else if (descriptor.Contains("SLEEVE"))
                     {
-                        if (matchedSizeInfo != null)
+                        if (matchedSizeInfo != null && matchedSizeInfo.SleeveValue != null)
                         {
-                            if (matchedSizeInfo.SleeveValue != null)
-                            {
-                                sizeValue = (float)matchedSizeInfo.SleeveValue;
-                            }
+                           sizeValue = (float)matchedSizeInfo.SleeveValue;
                         }
 
-                        if (specialSku != null)
+                        if (specialSku != null && specialSku.SleeveValue != null)
                         {
-                            if (specialSku.SleeveValue != null)
-                            {
-                                sizeValue = (float)specialSku.SleeveValue;
-                            }
+                           sizeValue = (float)specialSku.SleeveValue;
                         }
                     }
                     else if (descriptor.Contains("FRONT"))
                     {
-                        if (matchedSizeInfo != null)
+                        if (matchedSizeInfo != null && matchedSizeInfo.Value != null)
                         {
-                            if (matchedSizeInfo.Value != null)
-                            {
-                                sizeValue = (float)matchedSizeInfo.Value;
-                            }
+                           sizeValue = (float)matchedSizeInfo.Value;
                         }
 
-                        if (specialSku != null)
+                        if (specialSku != null && specialSku.SizeValue != null)
                         {
-                            if (specialSku.SizeValue != null)
-                            {
-                                sizeValue = (float)specialSku.SizeValue;
-                            }
+                           sizeValue = (float)specialSku.SizeValue;
                         }
                     }
                     else if (descriptor.Contains("BACK"))
                     {
-                        if (matchedSizeInfo != null)
+                        if (matchedSizeInfo != null && matchedSizeInfo.Value != null)
                         {
-                            if (matchedSizeInfo.Value != null)
-                            {
                                 sizeValue = (float)matchedSizeInfo.Value;
-                            }
                         }
 
-                        if (specialSku != null)
+                        if (specialSku != null && specialSku.BackValue != null)
                         {
-                            if (specialSku.BackValue != null)
-                            {
-                                sizeValue = (float)specialSku.BackValue;
-                            }
+                           sizeValue = (float)specialSku.BackValue;
                         }
                     }
                     else
@@ -181,25 +148,16 @@ namespace ShipmentPdfReader.Services.Pdf
                         processedMessage.WarningMessages.Add($"WARNING: No descriptor (FRONT|BACK|POCKET|SLEEVE) found SKU Code {skuCode} on page {pageNumber}. Edit manually!");
                     }
 
-                    string destinationFileName;
-
-                    if (size != null && color != null)
+                    if (size == null && color != null)
                     {
-                        destinationFileName = $"{pageNumber}-{descriptor}-{sizeValue}-{fontColor}.png";
-                    }
-                    else if (size == null && color != null)
-                    {
-                        destinationFileName = $"{pageNumber}-{descriptor}-MISSING_SIZE-{fontColor}.png";
                         processedMessage.WarningMessages.Add($"WARNING: Size missing for SA Code {skuCode} on page {pageNumber}.");
                     }
                     else if (size != null && color == null)
                     {
-                        destinationFileName = $"{pageNumber}-{descriptor}-{sizeValue}-MISSING_COLOR.png";
                         processedMessage.WarningMessages.Add($"WARNING: Color missing for SA Code {skuCode} on page {pageNumber}.");
                     }
                     else
                     {
-                        destinationFileName = $"{pageNumber}-{descriptor}-MISSING_SIZE-MISSING_COLOR.png";
                         processedMessage.WarningMessages.Add($"WARNING: Both size and color missing for SA Code {skuCode} on page {pageNumber}.");
                     }
 
@@ -213,7 +171,6 @@ namespace ShipmentPdfReader.Services.Pdf
 
                     }
 
-                    var destinationPath = System.IO.Path.Combine(_configManager.DestinationDirectoryPath, destinationFileName);
                     ProcessedItem temp = new ProcessedItem
                     {
                         Descriptor = descriptor,
@@ -221,20 +178,9 @@ namespace ShipmentPdfReader.Services.Pdf
                         SizeValue = sizeValue
                     };
                     item.ProcessedItems.Add(temp);
-                    //for (int j = 0; j < quantity; j++)
-                    //{
-                    //    destinationPath = GetDestinationPath(pageNumber, descriptor, sizeValue, fontColor); 
-                    //    File.Copy(file, destinationPath);
-                    //}
                 }
                 processedItems.Add(item);
             }
-            // After processing all items for the page:
-            //if (_runningTotal > 25)
-            //{
-            //    _currentDirectoryNumber++;
-            //    _runningTotal = 0; // Reset the running total
-            //}
             return processedItems;
         }
 
@@ -257,15 +203,11 @@ namespace ShipmentPdfReader.Services.Pdf
                     string[] contentParts = normalizedContent.Split(new[] { '-', ' ' }, StringSplitOptions.RemoveEmptyEntries);
                     string[] sizeParts = normalizedSize.Split(new[] { '-', ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                    if (contentParts.Length > 1 && sizeParts.Length > 1)
+                    if (contentParts.Length > 1 && sizeParts.Length > 1 && 
+                        contentParts[0].Equals(sizeParts[0], StringComparison.OrdinalIgnoreCase) &&
+                        contentParts[1].Equals(sizeParts[1], StringComparison.OrdinalIgnoreCase))
                     {
-                        if (contentParts[0].Equals(sizeParts[0], StringComparison.OrdinalIgnoreCase))
-                        {
-                            if (contentParts[1].Equals(sizeParts[1], StringComparison.OrdinalIgnoreCase))
-                            {
-                                return sizeInfo;
-                            }
-                        }
+                       return sizeInfo;
                     }
                 }
             }
@@ -277,7 +219,7 @@ namespace ShipmentPdfReader.Services.Pdf
         {
             if (string.IsNullOrEmpty(size))
             {
-                Console.WriteLine($"WARNING: Check the size manually, there is something wrong."); //TODO: WTF
+                Console.WriteLine($"WARNING: Check the size manually, there is something wrong."); //TODO: add log
 
                 return string.Empty;
             }

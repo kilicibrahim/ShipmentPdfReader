@@ -12,8 +12,6 @@ namespace ShipmentPdfReader.Services.Pdf
         public PngExtractor()
         {
             _configManager = ConfigurationManager.Instance;
-            Trace.Listeners.Add(new TextWriterTraceListener("C:\\Users\\ibrahim.kilic\\ShipmentPdfReader\\logs.txt"));
-
         }
 
         public void CreatePngs(ObservableCollection<ExtractedData> data)

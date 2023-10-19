@@ -9,7 +9,7 @@ using System.Windows.Input;
 
 namespace ShipmentPdfReader.ViewModels
 {
-    public class SizeInfoSelectorViewModel : BaseViewModel  // Ensure you have a ViewModel base for common functionalities
+    public class SizeInfoSelectorViewModel : BaseViewModel 
     {
         public ObservableCollection<SizeInfo> Configurations { get; set; }
         public SizeInfo NewSizeEntry { get; set; }
@@ -18,14 +18,10 @@ namespace ShipmentPdfReader.ViewModels
 
         public SizeInfoSelectorViewModel()
         {
-            // Initialize properties
             Configurations = new ObservableCollection<SizeInfo>();
             NewSizeEntry = new SizeInfo();
-
-            // Initialize commands
             AddNewEntryCommand = new Command(AddNewEntry);
 
-            // Load existing configurations
             LoadConfigurations();
         }
 

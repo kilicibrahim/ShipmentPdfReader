@@ -145,8 +145,6 @@ namespace ShipmentPdfReader.ViewModels
             {
                 WeakReferenceMessenger.Default.Send(new Messages($"Failed to process the PDF. Please try again or contact support, with the following message: {ex}"));
             }
-
-            return;
         }
     }
 }

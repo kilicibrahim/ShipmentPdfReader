@@ -25,6 +25,8 @@ namespace ShipmentPdfReader.ViewModels
         {
             get;
         }
+        private readonly ConfigurationManager _configurationManager;
+
         public SettingsViewModel()
         {
             SelectOutputDirectoryCommand = new Command(async () => await SelectPath("OutputDirectoryPath", isFile: false));
@@ -45,7 +47,6 @@ namespace ShipmentPdfReader.ViewModels
             "Export Configurations"
         };
         private string _outputDirectoryPath;
-        private ConfigurationManager _configurationManager;
 
         public string OutputDirectoryPath
         {

@@ -5,7 +5,7 @@ namespace ShipmentPdfReader.ViewModels
 {
     public class SizeInfoViewModel : BaseInfoViewModel<SizeInfo>
     {
-        private ConfigurationManager _configManager;
+        private readonly ConfigurationManager _configManager;
 
         public SizeInfoViewModel(List<SizeInfo> acceptableSizes, ConfigurationManager configManager)
             : base(acceptableSizes, () => new SizeInfo())
@@ -51,6 +51,5 @@ namespace ShipmentPdfReader.ViewModels
                 System.Diagnostics.Debug.WriteLine($"Error: {ex.Message}");
             }
         }
-
     }
 }
