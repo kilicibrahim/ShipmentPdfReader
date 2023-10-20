@@ -73,7 +73,7 @@ namespace ShipmentPdfReader.Services.Pdf
 
             foreach (var file in pngFiles)
             {
-                var destinationPath = GetDestinationPath(pageNumber, descriptorSuffix, sizeValue, fontColor);
+                var destinationPath = GetDestinationPath(pageNumber, item.Descriptor, sizeValue, fontColor);
                 if (!string.IsNullOrEmpty(destinationPath))
                 {
                     File.Copy(file, destinationPath);

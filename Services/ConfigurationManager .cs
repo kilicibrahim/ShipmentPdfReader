@@ -163,7 +163,7 @@ namespace ShipmentPdfReader
             }
         }
 
-        public void ImportConfiguration(string importPath, ConfigurationType configType)
+        public void ImportConfiguration(string importPath, ConfigurationType configType) //TO DO: hard reload of config pages
         {
             try
             {

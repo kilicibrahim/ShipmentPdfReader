@@ -31,13 +31,13 @@
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 
-	<!--</PropertyGroup> this is just for windows cli builds, the PackageCertificateThumbprint is temp so no problems, wtf is that  <TargetFrameworks /> tag where did it come from I don't understand this f-ing csproj
+	</PropertyGroup> <!--this is just for windows cli builds, the PackageCertificateThumbprint is temp so no problems, wtf is that-->
   <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' and '$(Configuration)' == 'Release'">
     <AppxPackageSigningEnabled>true</AppxPackageSigningEnabled>
     <PackageCertificateThumbprint>0D60D614FCACCC2C4541AFC68BD1A7CCB43CBC89</PackageCertificateThumbprint>
 	</PropertyGroup>
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' and '$(RuntimeIdentifierOverride)' != ''">
-    <RuntimeIdentifier>$(RuntimeIdentifierOverride)</RuntimeIdentifier>-->
+    <RuntimeIdentifier>$(RuntimeIdentifierOverride)</RuntimeIdentifier>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -59,9 +59,72 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="%24placeholder%24.scale-100.png" />
+	  <None Remove="%24placeholder%24.scale-125.png" />
+	  <None Remove="%24placeholder%24.scale-150.png" />
+	  <None Remove="%24placeholder%24.scale-200.png" />
+	  <None Remove="%24placeholder%24.scale-400.png" />
 	  <None Remove="acceptableColors.json" />
 	  <None Remove="acceptableSizes.json" />
+	  <None Remove="Content\PDFtoDTFLogo.scale-100.png" />
+	  <None Remove="Content\PDFtoDTFLogo.scale-125.png" />
+	  <None Remove="Content\PDFtoDTFLogo.scale-150.png" />
+	  <None Remove="Content\PDFtoDTFLogo.scale-200.png" />
+	  <None Remove="Content\PDFtoDTFLogo.scale-400.png" />
+	  <None Remove="Content\PDFtoDTFLogo.targetsize-16.png" />
+	  <None Remove="Content\PDFtoDTFLogo.targetsize-24.png" />
+	  <None Remove="Content\PDFtoDTFLogo.targetsize-256.png" />
+	  <None Remove="Content\PDFtoDTFLogo.targetsize-32.png" />
+	  <None Remove="Content\PDFtoDTFLogo.targetsize-48.png" />
+	  <None Remove="PDFtoDTFLogo.scale-100.png" />
+	  <None Remove="PDFtoDTFLogo.scale-125.png" />
+	  <None Remove="PDFtoDTFLogo.scale-150.png" />
+	  <None Remove="PDFtoDTFLogo.scale-200.png" />
+	  <None Remove="PDFtoDTFLogo.scale-400.png" />
+	  <None Remove="PDFtoDTFLogo.targetsize-16.png" />
+	  <None Remove="PDFtoDTFLogo.targetsize-16_altform-lightunplated.png" />
+	  <None Remove="PDFtoDTFLogo.targetsize-16_altform-unplated.png" />
+	  <None Remove="PDFtoDTFLogo.targetsize-24.png" />
+	  <None Remove="PDFtoDTFLogo.targetsize-24_altform-lightunplated.png" />
+	  <None Remove="PDFtoDTFLogo.targetsize-24_altform-unplated.png" />
+	  <None Remove="PDFtoDTFLogo.targetsize-256.png" />
+	  <None Remove="PDFtoDTFLogo.targetsize-256_altform-lightunplated.png" />
+	  <None Remove="PDFtoDTFLogo.targetsize-256_altform-unplated.png" />
+	  <None Remove="PDFtoDTFLogo.targetsize-32.png" />
+	  <None Remove="PDFtoDTFLogo.targetsize-32_altform-lightunplated.png" />
+	  <None Remove="PDFtoDTFLogo.targetsize-32_altform-unplated.png" />
+	  <None Remove="PDFtoDTFLogo.targetsize-48.png" />
+	  <None Remove="PDFtoDTFLogo.targetsize-48_altform-lightunplated.png" />
+	  <None Remove="PDFtoDTFLogo.targetsize-48_altform-unplated.png" />
 	  <None Remove="specialSKUCodes.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="Content\%24placeholder%24.scale-100.png" />
+	  <Content Include="Content\%24placeholder%24.scale-125.png" />
+	  <Content Include="Content\%24placeholder%24.scale-150.png" />
+	  <Content Include="Content\%24placeholder%24.scale-200.png" />
+	  <Content Include="Content\%24placeholder%24.scale-400.png" />
+	  <Content Include="Content\PDFtoDTFLogo.scale-100.png" />
+	  <Content Include="Content\PDFtoDTFLogo.scale-125.png" />
+	  <Content Include="Content\PDFtoDTFLogo.scale-150.png" />
+	  <Content Include="Content\PDFtoDTFLogo.scale-200.png" />
+	  <Content Include="Content\PDFtoDTFLogo.scale-400.png" />
+	  <Content Include="Content\PDFtoDTFLogo.targetsize-16.png" />
+	  <Content Include="Content\PDFtoDTFLogo.targetsize-24.png" />
+	  <Content Include="Content\PDFtoDTFLogo.targetsize-256.png" />
+	  <Content Include="Content\PDFtoDTFLogo.targetsize-32.png" />
+	  <Content Include="Content\PDFtoDTFLogo.targetsize-48.png" />
+	  <Content Include="Content\PDFtoDTFLogo.targetsize-16_altform-lightunplated.png" />
+	  <Content Include="Content\PDFtoDTFLogo.targetsize-16_altform-unplated.png" />
+	  <Content Include="Content\PDFtoDTFLogo.targetsize-24_altform-lightunplated.png" />
+	  <Content Include="Content\PDFtoDTFLogo.targetsize-24_altform-unplated.png" />
+	  <Content Include="Content\PDFtoDTFLogo.targetsize-256_altform-lightunplated.png" />
+	  <Content Include="Content\PDFtoDTFLogo.targetsize-256_altform-unplated.png" />
+	  <Content Include="Content\PDFtoDTFLogo.targetsize-32_altform-lightunplated.png" />
+	  <Content Include="Content\PDFtoDTFLogo.targetsize-32_altform-unplated.png" />
+	  <Content Include="Content\PDFtoDTFLogo.targetsize-48_altform-lightunplated.png" />
+	  <Content Include="Content\PDFtoDTFLogo.targetsize-48_altform-unplated.png" />
 	</ItemGroup>
 
 	<ItemGroup>

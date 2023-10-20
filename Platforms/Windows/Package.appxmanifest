@@ -6,7 +6,7 @@
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
   IgnorableNamespaces="uap rescap">
 
-  <Identity Name="maui-package-name-placeholder" Publisher="CN=ibrahim.Kilic" Version="0.0.12.0" />
+  <Identity Name="maui-package-name-placeholder" Publisher="CN=ibrahim.Kilic" Version="0.1.2.0" />
 
   <mp:PhoneIdentity PhoneProductId="2A701113-11FF-415A-962D-735B04A8613D" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
@@ -29,20 +29,31 @@
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="$targetentrypoint$">
       <uap:VisualElements
         DisplayName="PDFtoDTF"
-        Description="$placeholder$"
+        Description="Transform your order PDF into a DTF print with just a few simple clicks."
         Square150x150Logo="$placeholder$.png"
-        Square44x44Logo="$placeholder$.png"
+        Square44x44Logo="PDFtoDTFLogo.png"
         BackgroundColor="transparent">
-        <uap:DefaultTile Square71x71Logo="$placeholder$.png" Wide310x150Logo="$placeholder$.png" Square310x310Logo="$placeholder$.png" />
+        <uap:DefaultTile Square71x71Logo="$placeholder$.png" Wide310x150Logo="$placeholder$.png" Square310x310Logo="$placeholder$.png"  ShortName="PtD">
+          <uap:ShowNameOnTiles>
+            <uap:ShowOn Tile="square150x150Logo"/>
+            <uap:ShowOn Tile="wide310x150Logo"/>
+            <uap:ShowOn Tile="square310x310Logo"/>
+          </uap:ShowNameOnTiles>
+        </uap:DefaultTile >
         <uap:SplashScreen Image="$placeholder$.png" />
         <uap:InitialRotationPreference>
           <uap:Rotation Preference="landscapeFlipped"/></uap:InitialRotationPreference>
+        <uap:LockScreen BadgeLogo="Content\PDFtoDTFLogo.png" Notification="badge"/>
       </uap:VisualElements>
     </Application>
   </Applications>
 
   <Capabilities>
     <rescap:Capability Name="runFullTrust"/>
+    <Capability Name="internetClient"/>
+    <Capability Name="internetClientServer"/>
+    <Capability Name="privateNetworkClientServer"/>
+    <uap:Capability Name="removableStorage"/>
   </Capabilities>
 
 </Package>

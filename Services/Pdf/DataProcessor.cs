@@ -156,7 +156,7 @@ namespace ShipmentPdfReader.Services.Pdf
                     {
                         processedMessage.WarningMessages.Add($"WARNING: Color missing for SA Code {skuCode} on page {pageNumber}.");
                     }
-                    else
+                    else if(size == null && color == null)
                     {
                         processedMessage.WarningMessages.Add($"WARNING: Both size and color missing for SA Code {skuCode} on page {pageNumber}.");
                     }
