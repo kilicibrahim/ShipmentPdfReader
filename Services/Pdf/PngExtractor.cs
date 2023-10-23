@@ -7,7 +7,6 @@ namespace ShipmentPdfReader.Services.Pdf
     {
         private readonly ConfigurationManager _configManager;
         private int _currentDirectoryNumber = 1;
-        private int? _runningTotal = 0;
         public const int ItemNumberInPage = 25;
         public PngExtractor()
         {
@@ -18,6 +17,7 @@ namespace ShipmentPdfReader.Services.Pdf
         {
             try
             {
+                int runningTotal;
                 foreach (var dataItem in data)
                 {
                     var directoryName = _currentDirectoryNumber.ToString();
@@ -28,8 +28,8 @@ namespace ShipmentPdfReader.Services.Pdf
                     }
                     ExecuteCreatePng(dataItem);
                     var fileCount = Directory.GetFiles(directoryPath).Length;
-                    _runningTotal = fileCount;
-                    if (_runningTotal > ItemNumberInPage)
+                    runningTotal = fileCount;
+                    if (runningTotal > ItemNumberInPage)
                     {
                         _currentDirectoryNumber++;
                     }

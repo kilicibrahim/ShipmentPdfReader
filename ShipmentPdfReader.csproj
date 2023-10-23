@@ -100,6 +100,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Content Include="$placeholder$.scale-100.png" />
+	  <Content Include="$placeholder$.scale-125.png" />
+	  <Content Include="$placeholder$.scale-150.png" />
+	  <Content Include="$placeholder$.scale-200.png" />
+	  <Content Include="$placeholder$.scale-400.png" />
 	  <Content Include="Content\%24placeholder%24.scale-100.png" />
 	  <Content Include="Content\%24placeholder%24.scale-125.png" />
 	  <Content Include="Content\%24placeholder%24.scale-150.png" />
@@ -125,6 +130,26 @@
 	  <Content Include="Content\PDFtoDTFLogo.targetsize-32_altform-unplated.png" />
 	  <Content Include="Content\PDFtoDTFLogo.targetsize-48_altform-lightunplated.png" />
 	  <Content Include="Content\PDFtoDTFLogo.targetsize-48_altform-unplated.png" />
+	  <Content Include="PDFtoDTFLogo.scale-100.png" />
+	  <Content Include="PDFtoDTFLogo.scale-125.png" />
+	  <Content Include="PDFtoDTFLogo.scale-150.png" />
+	  <Content Include="PDFtoDTFLogo.scale-200.png" />
+	  <Content Include="PDFtoDTFLogo.scale-400.png" />
+	  <Content Include="PDFtoDTFLogo.targetsize-16.png" />
+	  <Content Include="PDFtoDTFLogo.targetsize-16_altform-lightunplated.png" />
+	  <Content Include="PDFtoDTFLogo.targetsize-16_altform-unplated.png" />
+	  <Content Include="PDFtoDTFLogo.targetsize-24.png" />
+	  <Content Include="PDFtoDTFLogo.targetsize-24_altform-lightunplated.png" />
+	  <Content Include="PDFtoDTFLogo.targetsize-24_altform-unplated.png" />
+	  <Content Include="PDFtoDTFLogo.targetsize-256.png" />
+	  <Content Include="PDFtoDTFLogo.targetsize-256_altform-lightunplated.png" />
+	  <Content Include="PDFtoDTFLogo.targetsize-256_altform-unplated.png" />
+	  <Content Include="PDFtoDTFLogo.targetsize-32.png" />
+	  <Content Include="PDFtoDTFLogo.targetsize-32_altform-lightunplated.png" />
+	  <Content Include="PDFtoDTFLogo.targetsize-32_altform-unplated.png" />
+	  <Content Include="PDFtoDTFLogo.targetsize-48.png" />
+	  <Content Include="PDFtoDTFLogo.targetsize-48_altform-lightunplated.png" />
+	  <Content Include="PDFtoDTFLogo.targetsize-48_altform-unplated.png" />
 	</ItemGroup>
 
 	<ItemGroup>
