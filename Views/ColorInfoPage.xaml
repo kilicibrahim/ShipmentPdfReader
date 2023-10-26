@@ -64,7 +64,7 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Entry Placeholder="Size" Text="{Binding NewEntry.BackroundColor}" Grid.Column="0"/>
+            <Entry Placeholder="BackgroundColor" Text="{Binding NewEntry.BackgroundColor}" Grid.Column="0"/>
             <Entry Placeholder="Value" Text="{Binding NewEntry.FontColor}" Grid.Column="1"/>
             <Button Text="Add New Entry" Command="{Binding AddNewEntryCommand}" IsEnabled="{Binding CanAddEntry}" BackgroundColor="DarkBlue" TextColor="White" Grid.Column="2"/>
         </Grid>

@@ -65,7 +65,7 @@ namespace ShipmentPdfReader.ViewModels
         {
             _configurations = new ObservableCollection<TModel>(initialData.Where(item => item != null));
             _createModelInstance = createModelInstance ?? throw new ArgumentNullException(nameof(createModelInstance));
-            NewEntry = _createModelInstance();  // Ensure NewEntry is initialized
+            NewEntry = _createModelInstance(); 
             AddNewEntryCommand = new Command(AddNewEntry);
             SaveCommand = new Command(SaveConfigurationsToFile);
             DeleteCommand = new Command<TModel>(DeleteEntry);

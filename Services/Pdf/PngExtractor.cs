@@ -7,7 +7,7 @@ namespace ShipmentPdfReader.Services.Pdf
     {
         private readonly ConfigurationManager _configManager;
         private int _currentDirectoryNumber = 1;
-        public const int ItemNumberInPage = 25;
+        public const int ItemNumberInPage = 32;
         public PngExtractor()
         {
             _configManager = ConfigurationManager.Instance;
