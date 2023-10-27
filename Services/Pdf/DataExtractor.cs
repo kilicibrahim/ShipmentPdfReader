@@ -1,4 +1,5 @@
-﻿using ShipmentPdfReader.Models;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using ShipmentPdfReader.Models;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -19,12 +20,19 @@ namespace ShipmentPdfReader.Services.Pdf
 
             foreach (var page in pdfContentPages)
             {
-                ExtractedData extractedData = ExtractedPage(page);
-                pagesData.Add(new PageData
+                try
                 {
-                    PageNumber = page.Key,
-                    Extracted = extractedData
-                });
+                    ExtractedData extractedData = ExtractedPage(page);
+                    pagesData.Add(new PageData
+                    {
+                        PageNumber = page.Key,
+                        Extracted = extractedData
+                    });
+                }
+                catch 
+                {
+                    WeakReferenceMessenger.Default.Send(new Messages("Something wrong with page: " + page.Key));
+                }
             }
 
             return pagesData;
@@ -45,15 +53,19 @@ namespace ShipmentPdfReader.Services.Pdf
                 Console.WriteLine($"Number of orders on the page: {orderCount}");
             }
 
-            var pageNumberMatch = Regex.Match(text, @"Page (\d+) of");
-            var pageNumber = pageNumberMatch.Groups[1].Value.Length > 0 ? Int32.Parse(pageNumberMatch.Groups[1].Value) : page.Key;
-            extractedData.PageNumber = pageNumber;
+            //var pageNumberMatch = Regex.Match(text, @"Page (\d+) of");
+            //var pageNumber = pageNumberMatch.Groups[1].Value.Length > 0 ? Int32.Parse(pageNumberMatch.Groups[1].Value) : page.Key;
+            extractedData.PageNumber = page.Key;
 
             var itemData = new ItemData();
 
             for (int i = 0; i < lines.Length; i++)
             {
                 var line = lines[i];
+                if (line.Contains("US POSTAGE & FEES PAID") && itemData != null)
+                {
+                    break;
+                }
                 var normalizedLine = line.ToLower().Replace("­", "").Replace("\u00A0", " ");
                 if (normalizedLine.Contains("personalization:"))
                 {
@@ -63,18 +75,17 @@ namespace ShipmentPdfReader.Services.Pdf
                 var quantitymatches = quantityRegex.Matches(line);
 
                 var saMatch = Regex.Matches(line, @"(SA|CC|KT|SK|F)\d{4}|(AL|T|X|SM)\d{3}|(kuz)\d{2}|(kuz)\d{3}");
+
+               // var saMatch = Regex.Matches(line, @"(ADEL|emma|SYDNEY|Isell|sena|Fashion|Edd|eli|jey|ll|Artistic|Z_C|Dream|Dainty|Elegantsy|1_V|SMLHL|0H)\d{2,4}|\d{2}C\d{2,4}|\d{1}(S|V)\d{3,4}"); //Omer emeksiz
                 var orderMatch = Regex.Match(line, @"­\s*(\d+)$");
                 if (orderMatch.Success)
                 {
                     int ordersInPage;
                     if (int.TryParse(orderMatch.Groups[1].Value, out ordersInPage))
                     {
-                        // Now you have the number of orders in 'ordersInPage' variable.
                         Console.WriteLine($"Number of orders on the page: {ordersInPage}");
                     }
                 }
-                // Updated size and color match patterns
-                // Update the regex patterns to include the colon ':'
                 var sizePattern = @"(?:SIZE|S\u00A0I\u00A0Z\u00A0E|S\s*I\s*Z\s*E|S\s*I\s*Z\s*E\s*S|style|Style|s\s*t\s*y\s*l\s*e|S\u00A0T\u00A0Y\u00A0L\u00A0E):";
                 var colorPattern = @"(?:COLORS|C\s*O\s*L\s*O\s*R|C\s*O\s*L\s*O\s*R\s*S):";
 
@@ -92,7 +103,7 @@ namespace ShipmentPdfReader.Services.Pdf
                     if (startIdx < 0 || endIdx <= startIdx || endIdx > line.Length)
                     {
                         Console.WriteLine($"WARNING: startIdx or endIdx out of range for line {line}. Skipping this match.");
-                        continue;  // Skip to the next iteration
+                        continue; 
                     }
 
                     var splitContent = line.Substring(startIdx, endIdx - startIdx).Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
@@ -102,17 +113,15 @@ namespace ShipmentPdfReader.Services.Pdf
                     {
                         if (partialSizeBuilder.Length > 0)
                         {
-                            // If there's a partial size, prepend it
                             content = partialSizeBuilder.ToString() + " " + content;
                         }
 
-                        // Check if the content is an acceptable size
                         if (IsAcceptableString(content, _configManager.AcceptableSizes))
                         {
                             itemData.Sizes.Add(content);
-                            partialSizeBuilder.Clear(); // Clear the builder since we've found a complete size
+                            partialSizeBuilder.Clear();
                         }
-                        else // The size might be partial, try it
+                        else 
                         {
                             partialSizeBuilder.Append(content);
                             if (partialSizeBuilder.Length > 0 && i < lines.Length - 1)
@@ -138,7 +147,6 @@ namespace ShipmentPdfReader.Services.Pdf
                     {
                         var normalizedContent = content.ToLower().Trim().Replace("\u00A0", " ");
                         var normalizedBackgroundColorList = _configManager.AcceptableColors.Select(c => c.BackgroundColor.ToLower().Trim());
-                        // Check if the content is an acceptable color
                         if (normalizedBackgroundColorList.Any(c => c == normalizedContent))
                         {
                             itemData.Colors.Add(content);
@@ -166,19 +174,19 @@ namespace ShipmentPdfReader.Services.Pdf
 
         private bool IsAcceptableString(string content, List<SizeInfo> sizes)
         {
-            // Normalize the content
+            
             string normalizedContent = content
-                .Replace("­", "")  // Remove soft hyphen
-                .Replace("\u00A0", " ")  // Replace non-breaking spaces with regular spaces
-                .ToLower();  // Convert to lower case
+                .Replace("­", "") 
+                .Replace("\u00A0", " ") 
+                .ToLower(); 
 
             return sizes.Exists(sizeInfo =>
             {
-                // Normalize the size
+                
                 string normalizedSize = sizeInfo.Size
-                    .Replace("­", "")  // Remove soft hyphen
-                    .Replace("\u00A0", " ")  // Replace non-breaking spaces with regular spaces
-                    .ToLower();  // Convert to lower case
+                    .Replace("­", "") 
+                    .Replace("\u00A0", " ") 
+                    .ToLower();  
 
                 return normalizedContent == normalizedSize ||
                        LevenshteinDistance(normalizedContent, normalizedSize) <= 1;

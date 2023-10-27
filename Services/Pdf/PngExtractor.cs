@@ -67,9 +67,14 @@ namespace ShipmentPdfReader.Services.Pdf
                 ? item.Descriptor.Split('_')[1].ToUpperInvariant()
                 : item.Descriptor;
 
-            var searchPattern = $"{skuCode}-*-{fontColor}.png";
+            var searchPattern = $"{skuCode}-*-.png";
             var pngFiles = Directory.GetFiles(_configManager.SourceDirectoryPath, searchPattern)
-                                    .Where(file => file.ToUpperInvariant().Contains($"-{descriptorSuffix.ToUpperInvariant()}-"));
+                                    .Where(file =>
+                                    {
+                                        var fileName = Path.GetFileName(file).ToUpperInvariant();
+                                        return fileName.Contains($"-{descriptorSuffix.ToUpperInvariant()}-") &&
+                                               (fileName.Contains($"-{fontColor.ToUpperInvariant()}.PNG") || fileName.Contains("-ALL.PNG"));
+                                    });
 
             foreach (var file in pngFiles)
             {
