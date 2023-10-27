@@ -66,8 +66,7 @@ namespace ShipmentPdfReader.Services.Pdf
             var descriptorSuffix = item.Descriptor.Contains('_')
                 ? item.Descriptor.Split('_')[1].ToUpperInvariant()
                 : item.Descriptor;
-
-            var searchPattern = $"{skuCode}-*-.png";
+            var searchPattern = $"{skuCode}-*.png";
             var pngFiles = Directory.GetFiles(_configManager.SourceDirectoryPath, searchPattern)
                                     .Where(file =>
                                     {

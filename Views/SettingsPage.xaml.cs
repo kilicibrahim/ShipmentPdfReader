@@ -28,7 +28,7 @@ namespace ShipmentPdfReader
             switch (selectedItem)
             {
                 case "General":
-                    ContentArea.Children.Add(new Label { Text = "This is the beta.", FontSize = 24 });
+                    ContentArea.Children.Add(new Label { Text = "This is the beta. Please give us feedback!", FontSize = 24 });
                     break;
 
                 case "Select Directory":
