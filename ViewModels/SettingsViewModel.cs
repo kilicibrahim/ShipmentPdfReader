@@ -25,6 +25,65 @@ namespace ShipmentPdfReader.ViewModels
         {
             get;
         }
+
+        private bool _isSortingEnabled;
+        public bool IsSortingEnabled
+        {
+            get => _isSortingEnabled;
+            set
+            {
+                SetProperty(ref _isSortingEnabled, value);
+                SaveSortSettings();
+            }
+        }
+
+        private string _firstSortCriterion;
+        private string _secondSortCriterion;
+        private string _thirdSortCriterion;
+
+        public string FirstSortCriterion
+        {
+            get => _firstSortCriterion;
+            set
+            {
+                if (string.IsNullOrEmpty(value) || value == SecondSortCriterion || value == ThirdSortCriterion)
+                {
+                    return;
+                }
+                SetProperty(ref _firstSortCriterion, value);
+                SaveSortSettings();
+            }
+        }
+
+        public string SecondSortCriterion
+        {
+            get => _secondSortCriterion;
+            set
+            {
+                if (string.IsNullOrEmpty(value) || value == FirstSortCriterion || value == ThirdSortCriterion)
+                {
+                    return;
+                }
+                SetProperty(ref _secondSortCriterion, value);
+                SaveSortSettings();
+            }
+        }
+
+        public string ThirdSortCriterion
+        {
+            get => _thirdSortCriterion;
+            set
+            {
+                if (string.IsNullOrEmpty(value) || value == FirstSortCriterion || value == SecondSortCriterion)
+                {
+                    return;
+                }
+                SetProperty(ref _thirdSortCriterion, value);
+                SaveSortSettings();
+            }
+        }
+        public List<string> SortOptions { get; } = new List<string> { "", "Sku", "Size", "Color" };
+
         private readonly ConfigurationManager _configurationManager;
 
         public SettingsViewModel()
@@ -37,14 +96,31 @@ namespace ShipmentPdfReader.ViewModels
             ImportSkuConfigurationCommand = new Command(async () => await ImportConfiguration(ConfigurationType.Sku));
             _sourceDirectoryPath = Preferences.Get("SourceDirectoryPath", string.Empty);
             _outputDirectoryPath = Preferences.Get("OutputDirectoryPath", string.Empty);
-            _configurationManager = ConfigurationManager.Instance; 
+            _configurationManager = ConfigurationManager.Instance;
+            LoadSortSettings();
+        }
+        private void LoadSortSettings()
+        {
+            IsSortingEnabled = Preferences.Get("IsSortingEnabled", false);
+            FirstSortCriterion = Preferences.Get("FirstSortCriterion", "");
+            SecondSortCriterion = Preferences.Get("SecondSortCriterion", "");
+            ThirdSortCriterion = Preferences.Get("ThirdSortCriterion", "");
+        }
+
+        public void SaveSortSettings()
+        {
+            Preferences.Set("IsSortingEnabled", IsSortingEnabled);
+            Preferences.Set("FirstSortCriterion", FirstSortCriterion ?? "");
+            Preferences.Set("SecondSortCriterion", SecondSortCriterion ?? "");
+            Preferences.Set("ThirdSortCriterion", ThirdSortCriterion ?? "");
         }
         public List<string> SidebarItems { get; } = new List<string>
         {
             "General",
             "Select Directory",
             "Import Configurations",
-            "Export Configurations"
+            "Export Configurations",
+            "Sorting"
         };
         private string _outputDirectoryPath;
 

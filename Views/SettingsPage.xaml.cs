@@ -21,10 +21,8 @@ namespace ShipmentPdfReader
         {
             var selectedItem = e.CurrentSelection.FirstOrDefault() as string;
 
-            // Clear the content area
             ContentArea.Children.Clear();
 
-            // Add relevant content based on selected item
             switch (selectedItem)
             {
                 case "General":
@@ -50,7 +48,40 @@ namespace ShipmentPdfReader
                 case "Export Configurations":
                     ContentArea.Children.Add(new Button { HorizontalOptions = LayoutOptions.Start, MaximumWidthRequest = 250, Text = "Export Configuration", Command = ((SettingsViewModel)BindingContext).ExportConfigurationCommand });
                     break;
+
+                case "Sorting":
+                    CreateSortingSettingsUI();
+                    break;
             }
+        }
+        private void CreateSortingSettingsUI()
+        {
+            var vm = (SettingsViewModel)BindingContext;
+            var sortingCheckBox = new CheckBox { IsChecked = vm.IsSortingEnabled };
+            sortingCheckBox.SetBinding(CheckBox.IsCheckedProperty, nameof(vm.IsSortingEnabled));
+            var checkBoxLabel = new Label { Text = "Enable Sorting" };
+            var checkBoxLayout = new StackLayout
+            {
+                Orientation = StackOrientation.Horizontal,
+                Children = { sortingCheckBox, checkBoxLabel }
+            };
+            ContentArea.Children.Add(checkBoxLayout);
+            var firstPicker = new Picker { Title = "First Sorting Criterion", ItemsSource = vm.SortOptions };
+            firstPicker.SetBinding(Picker.SelectedItemProperty, nameof(vm.FirstSortCriterion));
+
+            var secondPicker = new Picker { Title = "Second Sorting Criterion", ItemsSource = vm.SortOptions };
+            secondPicker.SetBinding(Picker.SelectedItemProperty, nameof(vm.SecondSortCriterion));
+
+            var thirdPicker = new Picker { Title = "Third Sorting Criterion", ItemsSource = vm.SortOptions };
+            thirdPicker.SetBinding(Picker.SelectedItemProperty, nameof(vm.ThirdSortCriterion));
+
+            ContentArea.Children.Add(firstPicker);
+            ContentArea.Children.Add(secondPicker);
+            ContentArea.Children.Add(thirdPicker);
+
+            var saveButton = new Button { Text = "Save Sorting Settings" };
+            saveButton.Clicked += (s, e) => vm.SaveSortSettings();
+            ContentArea.Children.Add(saveButton);
         }
     }
 }

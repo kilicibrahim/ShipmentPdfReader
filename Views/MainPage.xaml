@@ -8,10 +8,6 @@
             <Style TargetType="TabBar">
                 <Setter Property="Shell.TabBarBackgroundColor"
                         Value="#dfdfde" />
-                <!--<Setter Property="Shell.TabBarTitleColor"
-                        Value="#d9bf77" />
-                <Setter Property="Shell.TabBarUnselectedColor"
-                        Value="#6a0572" />-->
             </Style>
         </ResourceDictionary>
     </Shell.Resources>
@@ -21,8 +17,6 @@
         <Tab Title="Home">
             <ShellContent ContentTemplate="{DataTemplate local:HomePage}" />
         </Tab>
-
-
         <Tab Title="Size Info">
             <ShellContent ContentTemplate="{DataTemplate local:SizeInfoPage}" />
         </Tab>

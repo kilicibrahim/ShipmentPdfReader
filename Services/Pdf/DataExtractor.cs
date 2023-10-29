@@ -76,7 +76,7 @@ namespace ShipmentPdfReader.Services.Pdf
 
                 var saMatch = Regex.Matches(line, @"(SA|CC|KT|SK|F)\d{4}|(AL|T|X|SM)\d{3}|(kuz)\d{2}|(kuz)\d{3}");
 
-               // var saMatch = Regex.Matches(line, @"(ADEL|emma|SYDNEY|Isell|sena|Fashion|Edd|eli|jey|ll|Artistic|Z_C|Dream|Dainty|Elegantsy|1_V|SMLHL|0H)\d{2,4}|\d{2}C\d{2,4}|\d{1}(S|V)\d{3,4}"); //Omer emeksiz
+                // var saMatch = Regex.Matches(line, @"(ADEL|emma|SYDNEY|Isell|sena|Fashion|Edd|eli|jey|ll|Artistic|Z_C|Dream|Dainty|Elegantsy|1_V|SMLHL|0H)\d{2,4}|\d{2}C\d{2,4}|\d{1}(S|V)\d{3,4}"); //Omer emeksiz
                 var orderMatch = Regex.Match(line, @"­\s*(\d+)$");
                 if (orderMatch.Success)
                 {

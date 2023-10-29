@@ -24,7 +24,6 @@ namespace ShipmentPdfReader.ViewModels
             throw new NotImplementedException();
         }
 
-        [Obsolete]
         public DetailViewModel(ExtractedData data)
         {
             Data = data;

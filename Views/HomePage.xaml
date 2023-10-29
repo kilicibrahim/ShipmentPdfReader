@@ -1,28 +1,11 @@
 ﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ShipmentPdfReader.HomePage"
-             xmlns:local="clr-namespace:ShipmentPdfReader.Converters"
              BackgroundColor="#1e1e1e">
-
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <local:CountToHeightConverter x:Key="CountToHeightConverter"/>
-            <local:InverseBoolConverter x:Key="InverseBoolConverter"/>
-        </ResourceDictionary>
-    </ContentPage.Resources>
 
     <Grid RowDefinitions="Auto,2*"
           ColumnDefinitions="*,*">
 
-        <!-- Progress Indicator and Message -->
-        <!--<ProgressBar Grid.ColumnSpan="2"
-                     x:Name="ProgressBar"
-                     Progress="{Binding ProgressValue}"
-                     HeightRequest="20"/>
-        <Label Grid.ColumnSpan="2"
-               x:Name="ProgressMessageLabel"
-               Text="{Binding ProgressMessage}"
-               HorizontalOptions="Center"/>-->
         <StackLayout VerticalOptions="FillAndExpand">
             <Label Text="Extracted Orders" 
            BackgroundColor="Transparent" 
@@ -35,7 +18,7 @@
         <CollectionView x:Name="ExtractedDataView" 
                 ItemsSource="{Binding ExtractedPagesData}" 
                 VerticalOptions="FillAndExpand"
-                HeightRequest="500">
+                HeightRequest="560">
             <CollectionView.Header>
                 <Label Text="Extracted Data" 
                TextColor="Black" 
@@ -51,7 +34,7 @@
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                        <Frame BackgroundColor="#3c4042" Padding="10" Margin="5" BorderColor="#4d4d4d" CornerRadius="5" HeightRequest="175"> <!--HeightRequest="{Binding Items.Count, Converter={StaticResource CountToHeightConverter}}-->
+                        <Frame BackgroundColor="#3c4042" Padding="10" Margin="5" BorderColor="#4d4d4d" CornerRadius="5" HeightRequest="175">
                             <StackLayout>
                             <StackLayout.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnItemTapped"/>
@@ -64,7 +47,6 @@
                                 <BindableLayout.ItemTemplate>
                                     <DataTemplate>
                                         <StackLayout Spacing="4" WidthRequest="200" HeightRequest="250">
-                                            <!-- Adjust the WidthRequest as needed -->
                                             <Label TextColor="#bdc1c6" Text="{Binding Quantity, StringFormat='Quantity: {0}'}" FontAttributes="Italic"/>
                                             <Label TextColor="#bdc1c6" Text="{Binding Sku, StringFormat='Sku: {0}'}" FontAttributes="Italic"/>
                                             <Label TextColor="#bdc1c6" Text="{Binding Size, StringFormat='Size: {0}'}" FontAttributes="Italic"/>
@@ -87,7 +69,7 @@
         </CollectionView>
         </StackLayout>
 
-        <!-- Warnings Column -->
+         <!--Warnings Column--> 
         <StackLayout VerticalOptions="FillAndExpand"
             Grid.Column="1">
             <Label Text="Warnings" 
@@ -98,29 +80,55 @@
            VerticalTextAlignment="Center"
            HeightRequest="50"/>
             <CollectionView x:Name="WarningLog" Grid.Column="1" 
-            ItemsSource="{Binding WarningMessages}" 
+            ItemsSource="{Binding PaginatedWarnings}" 
             VerticalOptions="FillAndExpand"
             HeightRequest="500">
-            <CollectionView.Header>
-                <Label Text="Warning Messages" FontAttributes="Bold" FontSize="Large" HorizontalTextAlignment="Center" />
-            </CollectionView.Header>
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <ContentView>
-                            <Frame BackgroundColor="#3c4042" BorderColor="Transparent" Padding="10">
-                                <StackLayout Orientation="Horizontal">
-                                    <CheckBox IsChecked="false" />
-                                    <Label Text="{Binding}"  
-                                    TextColor="#bdc1c6" 
-                                    FontSize="16"
-                                    HorizontalOptions="FillAndExpand" 
-                                    VerticalOptions="Center"/>
-                                </StackLayout>
-                            </Frame>
-                        </ContentView>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+                <CollectionView.Header>
+                    <Label Text="Warning Messages" FontAttributes="Bold" FontSize="Large" HorizontalTextAlignment="Center" />
+                </CollectionView.Header>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BackgroundColor="#3c4042" BorderColor="Transparent" Padding="10">
+                            <StackLayout Orientation="Horizontal">
+                                <CheckBox IsChecked="false" />
+                                <Label Text="{Binding}"  
+                                TextColor="#bdc1c6" 
+                                FontSize="16"
+                                HorizontalOptions="FillAndExpand" 
+                                VerticalOptions="Center"/>
+                            </StackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <Grid
+                HeightRequest="60"
+                VerticalOptions="End"
+                HorizontalOptions="FillAndExpand"
+                Padding="10"
+                RowDefinitions="Auto"
+                ColumnDefinitions="*,*,*">
+
+                <Button
+                    Grid.Column="0"
+                    Text="Previous"
+                    Command="{Binding PreviousPageCommand}"
+                    WidthRequest="120"
+                    BackgroundColor="DimGrey"
+                    HorizontalOptions="Start"/>
+                <Label Text="{Binding TotalPagesInfo}"
+                       Grid.Column="1"
+                       HorizontalOptions="Center"
+                       TextColor="#e3e3e3"
+                       FontAttributes="Bold" />
+                <Button
+                    Text="Next"
+                    Command="{Binding NextPageCommand}"
+                    WidthRequest="120"
+                    Grid.Column="2"
+                    BackgroundColor="DimGrey"
+                    HorizontalOptions="End"/>
+            </Grid>
         </StackLayout>
 
 

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Maui.Storage;
 using CommunityToolkit.Mvvm.Messaging;
+using ShipmentPdfReader.Helpers;
 using ShipmentPdfReader.Services.Pdf;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -10,19 +11,90 @@ namespace ShipmentPdfReader.ViewModels
 {
     public class HomeViewModel : BaseViewModel
     {
+        public IDispatcher Dispatcher
+        {
+            get; set;
+        }
+        private int currentPage = 1;
+        private readonly int itemsPerPage = 10;
+        private List<string> allWarnings;
+        private ObservableCollection<string> paginatedWarnings;
+        public ObservableCollection<string> PaginatedWarnings
+        {
+            get => paginatedWarnings;
+            set
+            {
+                paginatedWarnings = value;
+                OnPropertyChanged(nameof(PaginatedWarnings));
+            }
+        }
+        public ICommand NextPageCommand
+        {
+            get;
+        }
+        public ICommand PreviousPageCommand
+        {
+            get;
+        }
         public Command StartProcessingCommand {  get; }
         public Command CreatePngsCommand
         {
             get;
         }
 
-        [Obsolete]
         public HomeViewModel()
         {
             StartProcessingCommand = new Command(async () => await StartProcessing());
             CreatePngsCommand = new Command(async () => await CreatePngs());
+            NextPageCommand = new Command(NextPage);
+            PreviousPageCommand = new Command(PreviousPage);
+            allWarnings = new List<string>();
+            UpdatePaginatedWarnings();
+        }
+        private int TotalPages;
+
+        public string TotalPagesInfo
+        {
+            get => $"Page: {CurrentPage} / {TotalPages}";
+        }
+        public int CurrentPage
+        {
+            get => currentPage;
+            set
+            {
+                if (currentPage != value)
+                {
+                    currentPage = value;
+                    OnPropertyChanged(nameof(CurrentPage));
+                    UpdatePaginatedWarnings();
+                }
+            }
+        }
+        public void NextPage()
+        {
+            if (CurrentPage * itemsPerPage < allWarnings.Count)
+            {
+                CurrentPage++;
+            }
         }
 
+        public void PreviousPage()
+        {
+            if (CurrentPage > 1)
+            {
+                CurrentPage--;
+            }
+        }
+
+        private void UpdatePaginatedWarnings()
+        {
+            var itemsToShow = allWarnings
+                .Skip((CurrentPage - 1) * itemsPerPage)
+                .Take(itemsPerPage);
+            PaginatedWarnings = new ObservableCollection<string>(itemsToShow);
+            OnPropertyChanged(nameof(TotalPages));
+            OnPropertyChanged(nameof(TotalPagesInfo));
+        }
         private Task CreatePngs()
         {
             var extractedPagesData = ExtractedPagesData;
@@ -43,8 +115,8 @@ namespace ShipmentPdfReader.ViewModels
             item.IsExpanded = !item.IsExpanded;
         });
         public ObservableCollection<string> LogMessages { get; } = new ObservableCollection<string>();
-        public ObservableCollection<string> WarningMessages { get; } = new ObservableCollection<string>();
-        public ObservableCollection<ExtractedData> ExtractedPagesData { get; set; } = new ObservableCollection<ExtractedData>();
+        public ObservableCollection<ExtractedData> ExtractedPagesData { get; private set; } = new ObservableCollection<ExtractedData>();
+        public ObservableCollection<string> WarningMessages { get; private set; } = new ObservableCollection<string>();
         public ICommand NavigateToDetailPageCommand => new Command<ExtractedData>(async (data) => await NavigateToDetailPage(data));
 
         private async Task NavigateToDetailPage(ExtractedData data)
@@ -78,8 +150,6 @@ namespace ShipmentPdfReader.ViewModels
                 var fileType = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
                 {
                     { DevicePlatform.WinUI, new[] { ".pdf" } },
-                    { DevicePlatform.Android, new[] { "application/pdf" } },
-                    { DevicePlatform.iOS, new[] { "com.adobe.pdf" } },
                     { DevicePlatform.MacCatalyst, new[] { "pdf" } }
                 });
 
@@ -90,19 +160,22 @@ namespace ShipmentPdfReader.ViewModels
                 };
 
                 var result = await FilePicker.PickAsync(options);
-                if (result != null)
+                if (result != null && !string.IsNullOrWhiteSpace(result.FullPath))
                 {
                     UpdatePath(ref _selectedFilePath, result.FullPath, key);
                 }
-            } 
+                else
+                {
+                    WeakReferenceMessenger.Default.Send(new Messages("PDF file selection was cancelled."));
+                }
+            }
             catch (Exception ex)
             {
-                WeakReferenceMessenger.Default.Send(new Messages($"Pdf selection failed: {ex.Message}"));
-                Console.WriteLine($"Pdf selection failed: {ex.Message}");
+                WeakReferenceMessenger.Default.Send(new Messages($"PDF selection failed: {ex.Message}"));
+                Console.WriteLine($"PDF selection failed: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
 
-        [Obsolete]
         private async Task StartProcessing()
         {
             var sourceDirectoryPath = Preferences.Get("sourceDirectoryPath", string.Empty);
@@ -113,39 +186,50 @@ namespace ShipmentPdfReader.ViewModels
                 WeakReferenceMessenger.Default.Send(new Messages("Source Directory or Output Directory is not selected. Please select in Setting tab."));
                 return;
             }
-
             await SelectPath("selectedFilePath");
-
             if (string.IsNullOrWhiteSpace(_selectedFilePath))
             {
                 WeakReferenceMessenger.Default.Send(new Messages("Select a Pdf to Start Processing"));
                 return;
             }
-
             try
             {
-                ExtractedPagesData.Clear();
-                WarningMessages.Clear();
                 PdfProcessor pdfProcessor = new PdfProcessor(_selectedFilePath);
-                var processedPageData = pdfProcessor.ProcessPdf(); 
+                var processedPageData = await pdfProcessor.ProcessPdfAsync();
+                var newExtractedData = processedPageData.Select(p => p.Extracted).ToList();
+                var newWarningMessages = processedPageData.SelectMany(p => p.Processed.WarningMessages).ToList();
 
-                // Ensure UI updates are performed on the main thread
-                await Device.InvokeOnMainThreadAsync(() =>
+                await Dispatcher.DispatchAsync(() =>
                 {
-                    foreach (var processedPage in processedPageData)
-                    {
-                        ExtractedPagesData.Add(processedPage.Extracted);
-                        foreach (var warningMessage in processedPage.Processed.WarningMessages)
-                        {
-                            WarningMessages.Add(warningMessage);
-                        }
+                    DisposeAndClearCollection(ExtractedPagesData);
+                    DisposeAndClearCollection(PaginatedWarnings);
+                    ExtractedPagesData = new ObservableCollection<ExtractedData>(newExtractedData);
+                    allWarnings = new List<string>(newWarningMessages);
+                    CurrentPage = 1;
+                    TotalPages = (int)Math.Ceiling(allWarnings.Count / (double)itemsPerPage);
+                    UpdatePaginatedWarnings();
 
-                    }
+                    OnPropertyChanged(nameof(ExtractedPagesData));
+                    OnPropertyChanged(nameof(PaginatedWarnings));
                 });
             }
             catch (Exception ex)
             {
                 WeakReferenceMessenger.Default.Send(new Messages($"Failed to process the PDF. Please try again or contact support, with the following message: {ex}"));
+            }
+        }
+        private void DisposeAndClearCollection<T>(ObservableCollection<T> collection)
+        {
+            if (collection != null)
+            {
+                foreach (var item in collection)
+                {
+                    if (item is IDisposable disposableItem)
+                    {
+                        disposableItem.Dispose();
+                    }
+                }
+                collection.Clear();
             }
         }
     }

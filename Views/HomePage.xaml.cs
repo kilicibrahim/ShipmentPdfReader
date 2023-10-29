@@ -6,15 +6,17 @@ namespace ShipmentPdfReader
 {
     public partial class HomePage : ContentPage
     {
-        //private string _selectedFilePath;
 
-        [Obsolete]
         public HomePage()
         {
             InitializeComponent();
             WeakReferenceMessenger.Default.Register<Messages>(this, OnMessageReceived);
 
-            BindingContext = new HomeViewModel();
+            var viewModel = new HomeViewModel
+            {
+                Dispatcher = this.Dispatcher
+            };
+            BindingContext = viewModel;
         }
         private void OnMessageReceived(object sender, Messages message)
         {
