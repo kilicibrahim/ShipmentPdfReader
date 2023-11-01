@@ -150,20 +150,36 @@ namespace ShipmentPdfReader.Services.Pdf
 
                     if (size == null && color != null)
                     {
-                        processedMessage.WarningMessages.Add($"WARNING: Size missing for SA Code {skuCode} on page {pageNumber}.");
+                        string warningMessage = $"WARNING: Size missing for SA Code {skuCode} on page {pageNumber}.";
+                        if (!processedMessage.WarningMessages.Contains(warningMessage))
+                        {
+                            processedMessage.WarningMessages.Add(warningMessage);
+                        }
                     }
                     else if (size != null && color == null)
                     {
-                        processedMessage.WarningMessages.Add($"WARNING: Color missing for SA Code {skuCode} on page {pageNumber}.");
+                        string warningMessage = $"WARNING: Color missing for SA Code {skuCode} on page {pageNumber}.";
+                        if (!processedMessage.WarningMessages.Contains(warningMessage))
+                        {
+                            processedMessage.WarningMessages.Add(warningMessage);
+                        }
                     }
                     else if(size == null && color == null)
                     {
-                        processedMessage.WarningMessages.Add($"WARNING: Both size and color missing for SA Code {skuCode} on page {pageNumber}.");
+                        string warningMessage = $"WARNING: Both size and color missing for SA Code {skuCode} on page {pageNumber}.";
+                        if (!processedMessage.WarningMessages.Contains(warningMessage))
+                        {
+                            processedMessage.WarningMessages.Add(warningMessage);
+                        }
                     }
 
                     if (quantity == null)
                     {
-                        processedMessage.WarningMessages.Add($"WARNING: Quantity is null there will be 0 as quantity on this item on page {pageNumber}.");
+                        string warningMessage = $"WARNING: Quantity is null for the {skuCode} there will be 0 as quantity on this item on page {pageNumber}.";
+                        if (!processedMessage.WarningMessages.Contains(warningMessage))
+                        {
+                            processedMessage.WarningMessages.Add(warningMessage);
+                        }
                     }
                     if (quantity > 20)
                     {

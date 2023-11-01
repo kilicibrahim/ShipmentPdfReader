@@ -53,8 +53,8 @@ namespace ShipmentPdfReader.Services.Pdf
                 Console.WriteLine($"Number of orders on the page: {orderCount}");
             }
 
-            //var pageNumberMatch = Regex.Match(text, @"Page (\d+) of");
-            //var pageNumber = pageNumberMatch.Groups[1].Value.Length > 0 ? Int32.Parse(pageNumberMatch.Groups[1].Value) : page.Key;
+            var pageNumberMatch = Regex.Match(text, @"Page (\d+) of");
+            var pageNumber = pageNumberMatch.Groups[1].Value.Length > 0 ? Int32.Parse(pageNumberMatch.Groups[1].Value) : page.Key;
             extractedData.PageNumber = page.Key;
 
             var itemData = new ItemData();
