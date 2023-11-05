@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
+using Newtonsoft.Json;
 using ShipmentPdfReader.Helpers;
 using System.Linq.Dynamic.Core;
 
@@ -183,6 +184,86 @@ namespace ShipmentPdfReader.Services.Pdf
         {
             return criteria.Where(c => !string.IsNullOrEmpty(c)).Select(c => $"Extracted.Items[0].{c}");
         }
+        public class ColorPair
+        {
+
+            [JsonProperty("Color")]
+            public string Color
+            {
+                get; set;
+            }
+        }
+
+        public async Task DividePdfByUserSelectionAsync(string jsonFilePath)
+        {
+            string jsonContent = File.ReadAllText(jsonFilePath);
+            var selectedCombinations = JsonConvert.DeserializeObject<List<ColorPair>>(jsonContent);
+
+            var pdfContentPages = _pdfReader.ReadContent();
+            var extractedPagesData = _dataExtractor.ExtractData(pdfContentPages);
+
+            var normalizedSelectedColors = selectedCombinations
+                .Select(c => c.Color.ToLowerInvariant())
+                .ToList();
+
+
+            var filteredPages = extractedPagesData
+                .Where(p => p?.Extracted?.Items != null && p.Extracted.Items.Count > 0) 
+                .Where(p => p.Extracted.Items.Any(item =>
+                    normalizedSelectedColors.Contains(item?.Color?.ToLowerInvariant())))
+                .ToList();
+
+            var groupedPages = filteredPages
+                .GroupBy(p => new { p.Extracted.Items[0].Size, p.Extracted.Items[0].Color })
+                .ToDictionary(g => g.Key, g => g.Select(p => p.PageNumber).ToList());
+
+            var allCombinedPageNumbers = groupedPages.SelectMany(g => g.Value).Distinct().ToList();
+
+            string allCombinationsPdfName = "AllCombinations.pdf";
+            string allCombinationsPdfPath = FileHelper.GenerateUniqueFilename(_configManager.DestinationDirectoryPath, allCombinationsPdfName, ".pdf");
+
+            CreatePdfFromPages(allCombinedPageNumbers, allCombinationsPdfPath);
+
+
+            var allPageNumbers = extractedPagesData.Select(p => p.PageNumber).ToHashSet();
+            var combinedPages = groupedPages.SelectMany(g => g.Value).ToHashSet();
+            var remainingPageNumbers = allPageNumbers.Except(combinedPages).ToList();
+
+            if (remainingPageNumbers.Any())
+            {
+                string outputPdfName = "RemainingPages.pdf";
+                string outputPdfPath = FileHelper.GenerateUniqueFilename(_configManager.DestinationDirectoryPath, outputPdfName, ".pdf");
+
+                CreatePdfFromPages(remainingPageNumbers, outputPdfPath);
+            }
+
+            WeakReferenceMessenger.Default.Send(new Messages("PDFs divided based on user selection successfully."));
+        }
+
+        public void CreatePdfFromPages(List<int> pageOrder, string outputPdfPath)
+        {
+            string originalPdfPath = _pdfFilePath;
+            using (PdfReader reader = new PdfReader(originalPdfPath))
+            {
+                using (FileStream fs = new FileStream(outputPdfPath, FileMode.Create, FileAccess.Write))
+                {
+                    Document document = new Document(reader.GetPageSizeWithRotation(1));
+                    PdfWriter writer = PdfWriter.GetInstance(document, fs);
+                    document.Open();
+
+                    PdfContentByte cb = writer.DirectContent;
+                    foreach (int pageNumber in pageOrder)
+                    {
+                        document.NewPage();
+                        PdfImportedPage page = writer.GetImportedPage(reader, pageNumber);
+                        cb.AddTemplate(page, 0, 0);
+                    }
+
+                    document.Close();
+                }
+            }
+        }
+
     }
 
 }

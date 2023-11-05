@@ -83,5 +83,10 @@ namespace ShipmentPdfReader
             saveButton.Clicked += (s, e) => vm.SaveSortSettings();
             ContentArea.Children.Add(saveButton);
         }
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            WeakReferenceMessenger.Default.Unregister<Messages>(this);
+        }
     }
 }

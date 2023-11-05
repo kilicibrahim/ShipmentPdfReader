@@ -28,7 +28,9 @@
         <Tab Title="Special SKU">
             <ShellContent ContentTemplate="{DataTemplate local:SpecialSkuCodeInfoPage}" />
         </Tab>
-    
+        <Tab Title="Divide Pdf">
+            <ShellContent ContentTemplate="{DataTemplate local:DividePdfPage}" />
+        </Tab>
         <Tab Title="Settings">
             <ShellContent ContentTemplate="{DataTemplate local:SettingsPage}" />
         </Tab>

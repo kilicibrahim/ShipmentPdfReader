@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using ShipmentPdfReader.Services.Interfaces;
+﻿using ShipmentPdfReader.Services.Interfaces;
 using Windows.Storage.Pickers;
 using CommunityToolkit.Maui;
 
@@ -19,9 +18,6 @@ namespace ShipmentPdfReader
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
-#if DEBUG
-		builder.Logging.AddDebug();
-#endif
 
             return builder.Build();
         }

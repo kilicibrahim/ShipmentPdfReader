@@ -1,0 +1,23 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ShipmentPdfReader.DividePdfPage"
+             Title="Divide PDF">
+
+    <StackLayout Padding="10">
+        <Button Text="Select PDF"
+                Command="{Binding SelectPdfCommand}" />
+
+        <Label Text="{Binding SelectedPdfFilePath}"
+               Margin="5" />
+
+        <Button Text="Select JSON"
+                Command="{Binding SelectJsonCommand}" />
+
+        <Label Text="{Binding SelectedJsonFilePath}"
+               Margin="5" />
+
+        <Button Text="Divide PDF"
+                Command="{Binding DividePdfCommand}"
+                IsEnabled="{Binding IsDivideEnabled}" />
+    </StackLayout>
+</ContentPage>

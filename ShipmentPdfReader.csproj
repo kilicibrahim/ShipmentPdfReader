@@ -188,6 +188,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Views\DividePdfPage.xaml.cs">
+	    <DependentUpon>DividePdfPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\PngDetailPage.xaml.cs">
 	    <DependentUpon>PngDetailPage.xaml</DependentUpon>
 	  </Compile>
@@ -212,6 +215,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Views\DividePdfPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\PngDetailPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
