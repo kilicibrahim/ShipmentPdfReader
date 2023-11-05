@@ -5,18 +5,21 @@
 
     <StackLayout Padding="10">
         <Button Text="Select PDF"
+                WidthRequest="150"     
                 Command="{Binding SelectPdfCommand}" />
 
         <Label Text="{Binding SelectedPdfFilePath}"
                Margin="5" />
 
         <Button Text="Select JSON"
+                WidthRequest="150"
                 Command="{Binding SelectJsonCommand}" />
 
         <Label Text="{Binding SelectedJsonFilePath}"
                Margin="5" />
 
         <Button Text="Divide PDF"
+                WidthRequest="150" 
                 Command="{Binding DividePdfCommand}"
                 IsEnabled="{Binding IsDivideEnabled}" />
     </StackLayout>
