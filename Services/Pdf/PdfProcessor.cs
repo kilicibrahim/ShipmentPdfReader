@@ -3,6 +3,7 @@ using iTextSharp.text;
 using iTextSharp.text.pdf;
 using Newtonsoft.Json;
 using ShipmentPdfReader.Helpers;
+using System.Data;
 using System.Linq.Dynamic.Core;
 
 namespace ShipmentPdfReader.Services.Pdf
@@ -39,6 +40,10 @@ namespace ShipmentPdfReader.Services.Pdf
 
                     Dictionary<int, string> pdfContentPages = _pdfReader.ReadContent();
                     List<PageData> extractedPagesData = _dataExtractor.ExtractData(pdfContentPages);
+                    if (extractedPagesData == null || !extractedPagesData.Any())
+                    {
+                        throw new InvalidOperationException("No data was extracted from the PDF.");
+                    }
                     if (isSortingEnabled)
                     {
                         string firstCriterion = Preferences.Get("FirstSortCriterion", "");
@@ -72,8 +77,14 @@ namespace ShipmentPdfReader.Services.Pdf
                     }
                     processedPagesData = _dataProcessor.ProcessData(extractedPagesData);
                     var summaryInfo = new SummaryInfo();
-                    summaryInfo.UpdateFromPageData(processedPagesData); //TODO: Implement the output of summaryInfo
-                    //TODO: Implement count 
+                    summaryInfo.UpdateFromPageData(processedPagesData); 
+                    DataTable dataTable = summaryInfo.PrepareDataForExcel(summaryInfo.SizeColorCombinationCounts);
+                    var summaryXslxFilePath = _configManager.DestinationDirectoryPath + "\\summaryInfo.xlsx";
+                    Microsoft.Maui.Controls.Application.Current.Dispatcher.Dispatch(async () =>
+                    {
+                        await summaryInfo.ExportToExcelAsync(dataTable, summaryXslxFilePath);
+                    });
+
                 }
                 catch (Exception ex)
                 {

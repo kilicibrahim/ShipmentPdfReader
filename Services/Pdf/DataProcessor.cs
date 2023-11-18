@@ -70,18 +70,21 @@ namespace ShipmentPdfReader.Services.Pdf
                 else
                 {
                     fontColor = fontColor.Trim();
-
                     var allFiles = Directory.GetFiles(_configManager.SourceDirectoryPath, skuCode + "*.png");
-                    pngFiles = allFiles.Where(file => file.ToUpperInvariant().Contains(fontColor.ToUpperInvariant()));
+
+                    pngFiles = allFiles.Where(file =>
+                        file.ToUpperInvariant().Contains(fontColor.ToUpperInvariant()) ||
+                        file.ToUpperInvariant().Contains("-ALL.PNG"));
+
                     if (!pngFiles.Any())
                     {
-                        processedMessage.WarningMessages.Add($"WARNING: Missing file with {fontColor} font color for Sku Code {skuCode} on page {pageNumber}.");
+                        processedMessage.WarningMessages.Add($"WARNING: Missing file with {fontColor} font color for Sku Code {skuCode} on page {pageNumber}. Considering '-ALL' files as well.");
                     }
                 }
 
                 foreach (var file in pngFiles)
                 {
-                    var matchDescriptor = Regex.Match(System.IO.Path.GetFileNameWithoutExtension(file), @"-?(FRONT|BACK|POCKET|SLEEVE)-?", RegexOptions.IgnoreCase);
+                    var matchDescriptor = Regex.Match(System.IO.Path.GetFileNameWithoutExtension(file), @"-?(FRONT|BACK|POCKET|SLEEVE|NECK)-?", RegexOptions.IgnoreCase);
                     var descriptor = matchDescriptor.Success ? matchDescriptor.Groups[1].Value : string.Empty;
 
 
@@ -119,6 +122,18 @@ namespace ShipmentPdfReader.Services.Pdf
                            sizeValue = (float)specialSku.SleeveValue;
                         }
                     }
+                    else if (descriptor.Contains("NECK"))
+                    {
+                        if (matchedSizeInfo != null && matchedSizeInfo.NeckValue != null)
+                        {
+                           sizeValue = (float)matchedSizeInfo.NeckValue;
+                        }
+
+                        if (specialSku != null && specialSku.NeckValue != null)
+                        {
+                           sizeValue = (float)specialSku.NeckValue;
+                        }
+                    }
                     else if (descriptor.Contains("FRONT"))
                     {
                         if (matchedSizeInfo != null && matchedSizeInfo.Value != null)
@@ -145,7 +160,7 @@ namespace ShipmentPdfReader.Services.Pdf
                     }
                     else
                     {
-                        processedMessage.WarningMessages.Add($"WARNING: No descriptor (FRONT|BACK|POCKET|SLEEVE) found SKU Code {skuCode} on page {pageNumber}. Edit manually!");
+                        processedMessage.WarningMessages.Add($"WARNING: No descriptor (FRONT|BACK|POCKET|SLEEVE|NECK) found SKU Code {skuCode} on page {pageNumber}. Edit manually!");
                     }
 
                     if (size == null && color != null)

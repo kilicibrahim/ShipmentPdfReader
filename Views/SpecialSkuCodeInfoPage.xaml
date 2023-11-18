@@ -37,7 +37,7 @@
             <Label Text="Back Value" Grid.Column="2" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
             <Label Text="Pocket Value" Grid.Column="3" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
             <Label Text="Sleeve Value" Grid.Column="4" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
-            <Label Text="Manuel Color" Grid.Column="5" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+            <Label Text="Neck Value" Grid.Column="5" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
             <Label Text="" Grid.Column="6"/>
         </Grid>
 
@@ -78,9 +78,11 @@
                                     <b:NumericValidationBehavior />
                                 </Entry.Behaviors>
                             </Entry>
-                            <Grid Margin="60,0,0,0" Grid.Column="5" HorizontalOptions="Center" VerticalOptions="Center">
-                                <Switch IsToggled="{Binding IsColorSelectionManual}" />
-                            </Grid>
+                            <Entry Text="{Binding NeckValue}" Grid.Column="5">
+                                <Entry.Behaviors>
+                                    <b:NumericValidationBehavior />
+                                </Entry.Behaviors>
+                            </Entry>
                             <Button Text="Delete" 
                             HeightRequest="30"
                             WidthRequest="120"
@@ -107,7 +109,7 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Entry Placeholder="Size" Text="{Binding NewEntry.SkuCode}" Grid.Column="0"/>
+            <Entry Placeholder="Sku" Text="{Binding NewEntry.SkuCode}" Grid.Column="0"/>
             <Entry Placeholder="Value" Text="{Binding NewEntry.SizeValue}" Grid.Column="1">
                 <Entry.Behaviors>
                     <b:NumericValidationBehavior />
@@ -128,9 +130,11 @@
                     <b:NumericValidationBehavior />
                 </Entry.Behaviors>
             </Entry>
-            <Grid Margin="60,0,0,0"  Grid.Column="5" HorizontalOptions="CenterAndExpand"  VerticalOptions="Center">
-                <Switch IsToggled="{Binding IsColorSelectionManual}" />
-            </Grid>
+            <Entry Placeholder="Neck Value" Text="{Binding NewEntry.NeckValue}" Grid.Column="5">
+                <Entry.Behaviors>
+                    <b:NumericValidationBehavior />
+                </Entry.Behaviors>
+            </Entry>
             <Button Text="Add New Entry" Command="{Binding AddNewEntryCommand}" IsEnabled="{Binding CanAddEntry}" BackgroundColor="DarkBlue" TextColor="White" Grid.Column="6"/>
         </Grid>
 

@@ -6,6 +6,7 @@
         private float? _value;
         private float? _pocketValue;
         private float? _sleeveValue;
+        private float? _neckValue;
 
         public string Size
         {
@@ -29,6 +30,11 @@
         {
             get => _sleeveValue;
             set => SetProperty(ref _sleeveValue, value);
+        }
+        public float? NeckValue
+        {
+            get => _neckValue;
+            set => SetProperty(ref _neckValue, value);
         }
     }
 

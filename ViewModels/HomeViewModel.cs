@@ -196,8 +196,19 @@ namespace ShipmentPdfReader.ViewModels
             {
                 PdfProcessor pdfProcessor = new PdfProcessor(_selectedFilePath);
                 var processedPageData = await pdfProcessor.ProcessPdfAsync();
-                var newExtractedData = processedPageData.Select(p => p.Extracted).ToList();
-                var newWarningMessages = processedPageData.SelectMany(p => p.Processed.WarningMessages).ToList();
+
+                if (processedPageData == null)
+                {
+                    WeakReferenceMessenger.Default.Send(new Messages("Processed page data is null."));
+                    return;
+                }
+
+                var newExtractedData = processedPageData.Where(p => p != null).Select(p => p.Extracted).ToList();
+                var newWarningMessages = processedPageData
+                                             .Where(p => p != null && p.Processed != null)
+                                             .SelectMany(p => p.Processed.WarningMessages ?? Enumerable.Empty<string>())
+                                             .ToList();
+
 
                 await Dispatcher.DispatchAsync(() =>
                 {

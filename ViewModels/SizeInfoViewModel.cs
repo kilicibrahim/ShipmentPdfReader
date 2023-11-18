@@ -34,7 +34,8 @@ namespace ShipmentPdfReader.ViewModels
             bool isAtLeastOneOtherPropertySet =
                 entry.Value.HasValue ||
                 entry.PocketValue.HasValue ||
-                entry.SleeveValue.HasValue;
+                entry.SleeveValue.HasValue ||
+                entry.NeckValue.HasValue;
 
             return isSizeEntryValid && isAtLeastOneOtherPropertySet;
         }

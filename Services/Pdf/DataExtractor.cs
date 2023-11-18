@@ -29,9 +29,9 @@ namespace ShipmentPdfReader.Services.Pdf
                         Extracted = extractedData
                     });
                 }
-                catch 
+                catch (Exception ex)
                 {
-                    WeakReferenceMessenger.Default.Send(new Messages("Something wrong with page: " + page.Key));
+                    WeakReferenceMessenger.Default.Send(new Messages($"Something wrong with page: {page.Key}. Error: {ex.Message}"));
                 }
             }
 
@@ -54,7 +54,7 @@ namespace ShipmentPdfReader.Services.Pdf
             }
 
             var pageNumberMatch = Regex.Match(text, @"Page (\d+) of");
-            var pageNumber = pageNumberMatch.Groups[1].Value.Length > 0 ? Int32.Parse(pageNumberMatch.Groups[1].Value) : page.Key;
+            var pageNumber = pageNumberMatch.Groups[1].Value.Length > 0 ? Int32.Parse(pageNumberMatch.Groups[1].Value) : page.Key; // for the ones using page number differently
             extractedData.PageNumber = page.Key;
 
             var itemData = new ItemData();
@@ -74,7 +74,7 @@ namespace ShipmentPdfReader.Services.Pdf
                 var quantityRegex = new Regex(@"^\d{1,2}( \d{1,2})?$", RegexOptions.Multiline);
                 var quantitymatches = quantityRegex.Matches(line);
 
-                var saMatch = Regex.Matches(line, @"(SA|CC|KT|SK|F)\d{4}|(AL|T|X|SM)\d{3}|(kuz)\d{2}|(kuz)\d{3}");
+                var saMatch = Regex.Matches(line, @"(SA|CC|KT|SK|F|YS)\d{4}|(AL|T|X|Y|SM|CD|smt|sm|kuz)\d{1,4}", RegexOptions.IgnoreCase);
 
                 // var saMatch = Regex.Matches(line, @"(ADEL|emma|SYDNEY|Isell|sena|Fashion|Edd|eli|jey|ll|Artistic|Z_C|Dream|Dainty|Elegantsy|1_V|SMLHL|0H)\d{2,4}|\d{2}C\d{2,4}|\d{1}(S|V)\d{3,4}"); //Omer emeksiz
                 var orderMatch = Regex.Match(line, @"­\s*(\d+)$");

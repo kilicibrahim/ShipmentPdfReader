@@ -8,6 +8,7 @@
         private float? _backValue;
         private float? _pocketValue;
         private float? _sleeveValue;
+        private float? _neckValue;
         private bool? _isColorSelectionManual;
         public string SkuCode
         {
@@ -34,6 +35,11 @@
         {
             get => _sleeveValue;
             set => SetProperty(ref _sleeveValue, value);
+        }
+        public float? NeckValue
+        {
+            get => _neckValue;
+            set => SetProperty(ref _neckValue, value);
         }
         public bool IsColorSelectionManual
         {
