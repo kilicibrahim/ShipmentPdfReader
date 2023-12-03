@@ -204,24 +204,24 @@ namespace ShipmentPdfReader.Services.Pdf
                 get; set;
             }
         }
-
         public async Task DividePdfByUserSelectionAsync(string jsonFilePath)
         {
             string jsonContent = File.ReadAllText(jsonFilePath);
-            var selectedCombinations = JsonConvert.DeserializeObject<List<ColorPair>>(jsonContent);
+            var selectedCombinations = JsonConvert.DeserializeObject<List<ColorSizePair>>(jsonContent);
 
             var pdfContentPages = _pdfReader.ReadContent();
             var extractedPagesData = _dataExtractor.ExtractData(pdfContentPages);
 
-            var normalizedSelectedColors = selectedCombinations
-                .Select(c => c.Color.ToLowerInvariant())
+            var normalizedSelectedCombinations = selectedCombinations
+                .Select(c => new { Color = c.Color.ToLowerInvariant(), Size = c.Size.ToLowerInvariant() })
                 .ToList();
 
-
             var filteredPages = extractedPagesData
-                .Where(p => p?.Extracted?.Items != null && p.Extracted.Items.Count > 0) 
-                .Where(p => p.Extracted.Items.Any(item =>
-                    normalizedSelectedColors.Contains(item?.Color?.ToLowerInvariant())))
+                .Where(p => p?.Extracted?.Items != null && p.Extracted.Items.Count > 0)
+                .Where(p => p.Extracted.Items.Exists(item =>
+                    normalizedSelectedCombinations.Exists(nc =>
+                        nc.Color == item?.Color?.ToLowerInvariant() &&
+                        nc.Size == item?.Size?.ToLowerInvariant())))
                 .ToList();
 
             var groupedPages = filteredPages
@@ -234,7 +234,6 @@ namespace ShipmentPdfReader.Services.Pdf
             string allCombinationsPdfPath = FileHelper.GenerateUniqueFilename(_configManager.DestinationDirectoryPath, allCombinationsPdfName, ".pdf");
 
             CreatePdfFromPages(allCombinedPageNumbers, allCombinationsPdfPath);
-
 
             var allPageNumbers = extractedPagesData.Select(p => p.PageNumber).ToHashSet();
             var combinedPages = groupedPages.SelectMany(g => g.Value).ToHashSet();
@@ -249,6 +248,17 @@ namespace ShipmentPdfReader.Services.Pdf
             }
 
             WeakReferenceMessenger.Default.Send(new Messages("PDFs divided based on user selection successfully."));
+        }
+        public class ColorSizePair
+        {
+            public string Color
+            {
+                get; set;
+            }
+            public string Size
+            {
+                get; set;
+            }
         }
 
         public void CreatePdfFromPages(List<int> pageOrder, string outputPdfPath)

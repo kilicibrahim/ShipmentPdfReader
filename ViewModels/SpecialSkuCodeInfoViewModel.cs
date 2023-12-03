@@ -5,7 +5,7 @@ namespace ShipmentPdfReader.ViewModels
 {
     public class SpecialSkuCodeInfoViewModel : BaseInfoViewModel<SpecialSkuCodeInfo>
     {
-        private ConfigurationManager _configManager;
+        private readonly ConfigurationManager _configManager;
 
         public SpecialSkuCodeInfoViewModel(List<SpecialSkuCodeInfo> specialSKUCodes, ConfigurationManager configManager)
             : base(specialSKUCodes, () => new SpecialSkuCodeInfo())
