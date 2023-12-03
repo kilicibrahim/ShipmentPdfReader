@@ -4,7 +4,7 @@
 
 ShipmentPdfReader is an application developed using .NET MAUI that helps in processing and analyzing shipment data extracted from PDF files. It allows users to inspect and modify the extracted information before proceeding to further processes like saving the data to a file or database.
 
-![PdfToDtf](https://github.com/kilicibrahim/ShipmentPdfReader/assets/80289487/4fe1aa4c-4fc0-46ec-8bf3-9b5f891f3422)
+![PdfToDtf0 12](https://github.com/kilicibrahim/ShipmentPdfReader/assets/80289487/0407f7a3-2b37-4d57-837d-e1877d4a2c1d)
 
 *Add a screenshot of your application here for a visual representation*
 
