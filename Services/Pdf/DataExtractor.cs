@@ -58,6 +58,7 @@ namespace ShipmentPdfReader.Services.Pdf
             extractedData.PageNumber = page.Key;
 
             var itemData = new ItemData();
+            var itemDataForExcel = new ItemData();
 
             for (int i = 0; i < lines.Length; i++)
             {
@@ -115,7 +116,7 @@ namespace ShipmentPdfReader.Services.Pdf
                         {
                             content = partialSizeBuilder.ToString() + " " + content;
                         }
-
+                        itemDataForExcel.Sizes.Add(content);
                         if (IsAcceptableString(content, _configManager.AcceptableSizes))
                         {
                             itemData.Sizes.Add(content);
@@ -147,6 +148,7 @@ namespace ShipmentPdfReader.Services.Pdf
                     {
                         var normalizedContent = content.ToLower().Trim().Replace("\u00A0", " ");
                         var normalizedBackgroundColorList = _configManager.AcceptableColors.Select(c => c.BackgroundColor.ToLower().Trim());
+                        itemDataForExcel.Colors.Add(normalizedContent);
                         if (normalizedBackgroundColorList.Any(c => c == normalizedContent))
                         {
                             itemData.Colors.Add(content);
@@ -157,6 +159,7 @@ namespace ShipmentPdfReader.Services.Pdf
                 foreach (Match match in saMatch.Cast<Match>())
                 {
                     itemData.SkuCodes.Add(match.Value);
+                    itemDataForExcel.SkuCodes.Add(match.Value);
                 }
                 foreach (Match match in quantitymatches.Cast<Match>())
                 {
@@ -165,10 +168,12 @@ namespace ShipmentPdfReader.Services.Pdf
                     {
                         Console.WriteLine($"Quantity: {quantity}");
                         itemData.Quantities.Add(Convert.ToInt32(quantity));
+                        itemDataForExcel.Quantities.Add(Convert.ToInt32(quantity));
                     }
                 }
             }
-            extractedData.ConvertToItems(itemData);
+            ExtractedData.ConvertToItems(itemData, extractedData.Items);
+            ExtractedData.ConvertToItems(itemDataForExcel, extractedData.ItemsForExcel, false);
             return extractedData;
         }
 

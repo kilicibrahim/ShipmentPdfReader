@@ -15,9 +15,11 @@ namespace ShipmentPdfReader.Services.Pdf
         private readonly DataProcessor _dataProcessor;
         private readonly ConfigurationManager _configManager;
         private readonly string _pdfFilePath;
+        private readonly string _pdfFileName;
         public PdfProcessor(string filePath)
         {
             _pdfReader = new PdfRead(filePath);
+            _pdfFileName = Path.GetFileName(filePath);
             _pdfFilePath = filePath;
             _dataExtractor = new DataExtractor();
             _dataProcessor = new DataProcessor();
@@ -79,7 +81,7 @@ namespace ShipmentPdfReader.Services.Pdf
                     var summaryInfo = new SummaryInfo();
                     summaryInfo.UpdateFromPageData(processedPagesData); 
                     DataTable dataTable = summaryInfo.PrepareDataForExcel(summaryInfo.SizeColorCombinationCounts);
-                    var summaryXslxFilePath = _configManager.DestinationDirectoryPath + "\\summaryInfo.xlsx";
+                    var summaryXslxFilePath = _configManager.DestinationDirectoryPath + "\\" + _pdfFileName + ".xlsx";
                     Microsoft.Maui.Controls.Application.Current.Dispatcher.Dispatch(async () =>
                     {
                         await summaryInfo.ExportToExcelAsync(dataTable, summaryXslxFilePath);
@@ -204,6 +206,7 @@ namespace ShipmentPdfReader.Services.Pdf
                 get; set;
             }
         }
+
         public async Task DividePdfByUserSelectionAsync(string jsonFilePath)
         {
             string jsonContent = File.ReadAllText(jsonFilePath);
@@ -285,6 +288,16 @@ namespace ShipmentPdfReader.Services.Pdf
             }
         }
 
+        public static async Task ExtractExcelsFromPageData(List<PageData> processedPagesData, string path)
+        {
+            var summaryInfo = new SummaryInfo();
+            summaryInfo.UpdateFromPageData(processedPagesData);
+            DataTable dataTable = summaryInfo.PrepareDataForExcel(summaryInfo.SizeColorCombinationCounts);
+            Application.Current.Dispatcher.Dispatch(async () =>
+            {
+                await summaryInfo.ExportToExcelAsync(dataTable, path);
+            });
+        }
     }
 
 }

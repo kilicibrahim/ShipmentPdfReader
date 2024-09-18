@@ -11,6 +11,7 @@ namespace ShipmentPdfReader.Converters
             return (bool)value ? "Save" : "Edit";
         }
 
+        [Obsolete]
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             // Not needed here

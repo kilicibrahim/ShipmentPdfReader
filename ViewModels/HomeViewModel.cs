@@ -125,6 +125,8 @@ namespace ShipmentPdfReader.ViewModels
         }
 
         private string _selectedFilePath;
+        private List<string> _selectedFilePaths;
+
         public string SelectedFilePath
         {
             get => _selectedFilePath;
@@ -176,6 +178,49 @@ namespace ShipmentPdfReader.ViewModels
             }
         }
 
+        /// <summary>
+        /// Selects one or more .pdf files
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        private async Task SelectMultiplePaths()
+        {
+            try
+            {
+                var fileType = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
+                {
+                    { DevicePlatform.WinUI, new[] { ".pdf" } },
+                    { DevicePlatform.MacCatalyst, new[] { "pdf" } }
+                });
+
+                var options = new PickOptions
+                {
+                    PickerTitle = "Please select one or more PDF files",
+                    FileTypes = fileType
+                };
+
+                var results = await FilePicker.PickMultipleAsync(options);
+                if (results != null && results.Any())
+                {
+                    var selectedFiles = results.Select(r => r.FullPath).ToList();
+                    if (selectedFiles.Any())
+                    {
+                        _selectedFilePaths = selectedFiles;
+                    }
+                }
+                else
+                {
+                    WeakReferenceMessenger.Default.Send(new Messages("PDF file selection was cancelled."));
+                }
+            }
+            catch (Exception ex)
+            {
+                WeakReferenceMessenger.Default.Send(new Messages($"PDF selection failed: {ex.Message}"));
+                Console.WriteLine($"PDF selection failed: {ex.Message}\nStackTrace: {ex.StackTrace}");
+            }
+        }
+
+
         private async Task StartProcessing()
         {
             var sourceDirectoryPath = Preferences.Get("sourceDirectoryPath", string.Empty);
@@ -186,43 +231,51 @@ namespace ShipmentPdfReader.ViewModels
                 WeakReferenceMessenger.Default.Send(new Messages("Source Directory or Output Directory is not selected. Please select in Setting tab."));
                 return;
             }
-            await SelectPath("selectedFilePath");
-            if (string.IsNullOrWhiteSpace(_selectedFilePath))
-            {
-                WeakReferenceMessenger.Default.Send(new Messages("Select a Pdf to Start Processing"));
-                return;
-            }
+            await SelectMultiplePaths();
+
             try
             {
-                PdfProcessor pdfProcessor = new PdfProcessor(_selectedFilePath);
-                var processedPageData = await pdfProcessor.ProcessPdfAsync();
-
-                if (processedPageData == null)
+                var allPdfPages = new List<PageData>();
+                foreach(var file in _selectedFilePaths)
                 {
-                    WeakReferenceMessenger.Default.Send(new Messages("Processed page data is null."));
-                    return;
+                    if (string.IsNullOrWhiteSpace(file))
+                    {
+                        WeakReferenceMessenger.Default.Send(new Messages("Select a Pdf to Start Processing"));
+                        return;
+                    }
+                    PdfProcessor pdfProcessor = new PdfProcessor(file);
+                    var processedPageData = await pdfProcessor.ProcessPdfAsync();
+
+                    allPdfPages.AddRange(processedPageData);
+                    if (processedPageData == null)
+                    {
+                        WeakReferenceMessenger.Default.Send(new Messages("Processed page data is null."));
+                        return;
+                    }
+
+                    var newExtractedData = processedPageData.Where(p => p != null).Select(p => p.Extracted).ToList();
+                    var newWarningMessages = processedPageData
+                                                 .Where(p => p != null && p.Processed != null)
+                                                 .SelectMany(p => p.Processed.WarningMessages ?? Enumerable.Empty<string>())
+                                                 .ToList();
+
+
+                    await Dispatcher.DispatchAsync(() =>
+                    {
+                        DisposeAndClearCollection(ExtractedPagesData);
+                        DisposeAndClearCollection(PaginatedWarnings);
+                        ExtractedPagesData = new ObservableCollection<ExtractedData>(newExtractedData);
+                        allWarnings = new List<string>(newWarningMessages);
+                        CurrentPage = 1;
+                        TotalPages = (int)Math.Ceiling(allWarnings.Count / (double)itemsPerPage);
+                        UpdatePaginatedWarnings();
+
+                        OnPropertyChanged(nameof(ExtractedPagesData));
+                        OnPropertyChanged(nameof(PaginatedWarnings));
+                    });
                 }
+                await PdfProcessor.ExtractExcelsFromPageData(allPdfPages, ConfigurationManager.Instance.DestinationDirectoryPath + "\\summary.xlsx");
 
-                var newExtractedData = processedPageData.Where(p => p != null).Select(p => p.Extracted).ToList();
-                var newWarningMessages = processedPageData
-                                             .Where(p => p != null && p.Processed != null)
-                                             .SelectMany(p => p.Processed.WarningMessages ?? Enumerable.Empty<string>())
-                                             .ToList();
-
-
-                await Dispatcher.DispatchAsync(() =>
-                {
-                    DisposeAndClearCollection(ExtractedPagesData);
-                    DisposeAndClearCollection(PaginatedWarnings);
-                    ExtractedPagesData = new ObservableCollection<ExtractedData>(newExtractedData);
-                    allWarnings = new List<string>(newWarningMessages);
-                    CurrentPage = 1;
-                    TotalPages = (int)Math.Ceiling(allWarnings.Count / (double)itemsPerPage);
-                    UpdatePaginatedWarnings();
-
-                    OnPropertyChanged(nameof(ExtractedPagesData));
-                    OnPropertyChanged(nameof(PaginatedWarnings));
-                });
             }
             catch (Exception ex)
             {

@@ -36,7 +36,7 @@ namespace ShipmentPdfReader.Services.Pdf
         {
             foreach (var page in pages)
             {
-                foreach (var item in page.Extracted.Items)
+                foreach (var item in page.Extracted.ItemsForExcel)
                 {
                     int quantity = item.Quantity ?? 1;
 

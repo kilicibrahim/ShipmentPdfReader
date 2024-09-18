@@ -13,30 +13,49 @@ namespace ShipmentPdfReader.Services.Pdf
         {
             Items = new List<Item>();
         }
-        public void ConvertToItems(ItemData itemData)
+      
+        public static void ConvertToItems(ItemData itemData, List<Item> items, bool isSkuNeeded = true)
         {
-            var items = new List<Item>();
-            int count = itemData.SkuCodes.Count;  
-
-            for (int i = 0; i < count; i++)
+            if (isSkuNeeded)
             {
-                if (string.IsNullOrWhiteSpace(itemData.SkuCodes[i]))
-                {
-                    Console.WriteLine($"Warning: Missing SKU at position {i}. Skipping item.");
-                    continue;
-                }
+                int count = itemData.SkuCodes.Count;
 
-                items.Add(new Item
+                for (int i = 0; i < count; i++)
                 {
-                    Quantity = i < itemData.Quantities.Count ? itemData.Quantities[i] : (int?)null,
-                    Sku = itemData.SkuCodes[i],
-                    Size = i < itemData.Sizes.Count ? itemData.Sizes[i] : null,
-                    Color = i < itemData.Colors.Count ? itemData.Colors[i] : null
-                });
+                    if (string.IsNullOrWhiteSpace(itemData.SkuCodes[i]))
+                    {
+                        Console.WriteLine($"Warning: Missing SKU at position {i}. Skipping item.");
+                        continue;
+                    }
+
+                    items.Add(new Item
+                    {
+                        Quantity = i < itemData.Quantities.Count ? itemData.Quantities[i] : (int?)null,
+                        Sku = itemData.SkuCodes[i],
+                        Size = i < itemData.Sizes.Count ? itemData.Sizes[i] : null,
+                        Color = i < itemData.Colors.Count ? itemData.Colors[i] : null
+                    });
+                }
             }
-            Items.AddRange(items);
+            else
+            {
+                int count = Math.Max(itemData.Sizes.Count, itemData.Colors.Count);
+                
+                for (int i = 0; i < count; i++)
+                {
+                    items.Add(new Item
+                    {
+                        Quantity = i < itemData.Quantities.Count ? itemData.Quantities[i] : (int?)null,
+                        Sku = i < itemData.SkuCodes.Count ? itemData.SkuCodes[i] : null,
+                        Size = i < itemData.Sizes.Count ? itemData.Sizes[i] : null,
+                        Color = i < itemData.Colors.Count ? itemData.Colors[i] : null
+                    });
+                }
+            }
         }
+
         public List<Item> Items { get; set; }
+        public List<Item> ItemsForExcel { get; set; } = new List<Item>();
     }
 
     public class ProcessedData
@@ -88,6 +107,14 @@ namespace ShipmentPdfReader.Services.Pdf
         public List<string> Colors { get; set; } = new List<string>();
         public List<int> Quantities { get; set; } = new List<int>();
     }
+    public class ContentData
+    {
+        public List<string> SkuCodes { get; set; } = new List<string>();
+        public List<string> Sizes { get; set; } = new List<string>();
+        public List<string> Colors { get; set; } = new List<string>();
+        public List<int> Quantities { get; set; } = new List<int>();
+    }
+
     public class Item : ObservableObject
     {
         public int? Quantity { get; set; }
