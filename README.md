@@ -51,6 +51,12 @@ Copy code
 To sideload the app on Windows, generate an app package and share it along with the certificate for installation on other systems.
 
 (https://learn.microsoft.com/en-us/dotnet/maui/windows/deployment/publish-visual-studio-folder)
+
+## Publish MSIX package
+
+developer PowerShell
+dotnet publish -c Relase -f net7.0-windows10.0.19041.0 -o "YOUR_PATH"
+
 ## Contributing
 
 We welcome contributions from the community! Please read our [contributing guide](/CONTRIBUTING.md) for guidelines on how to contribute to this project.

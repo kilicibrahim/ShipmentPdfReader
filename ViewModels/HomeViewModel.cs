@@ -37,6 +37,7 @@ namespace ShipmentPdfReader.ViewModels
             get;
         }
         public Command StartProcessingCommand {  get; }
+        public Command StartBatchProcessingCommand {  get; }
         public Command CreatePngsCommand
         {
             get;
@@ -45,6 +46,7 @@ namespace ShipmentPdfReader.ViewModels
         public HomeViewModel()
         {
             StartProcessingCommand = new Command(async () => await StartProcessing());
+            StartBatchProcessingCommand = new Command(async () => await StartBatchProcessing());
             CreatePngsCommand = new Command(async () => await CreatePngs());
             NextPageCommand = new Command(NextPage);
             PreviousPageCommand = new Command(PreviousPage);
@@ -220,8 +222,7 @@ namespace ShipmentPdfReader.ViewModels
             }
         }
 
-
-        private async Task StartProcessing()
+        private async Task StartBatchProcessing()
         {
             var sourceDirectoryPath = Preferences.Get("sourceDirectoryPath", string.Empty);
             var outputDirectoryPath = Preferences.Get("outputDirectoryPath", string.Empty);
@@ -236,7 +237,7 @@ namespace ShipmentPdfReader.ViewModels
             try
             {
                 var allPdfPages = new List<PageData>();
-                foreach(var file in _selectedFilePaths)
+                foreach (var file in _selectedFilePaths)
                 {
                     if (string.IsNullOrWhiteSpace(file))
                     {
@@ -282,6 +283,61 @@ namespace ShipmentPdfReader.ViewModels
                 WeakReferenceMessenger.Default.Send(new Messages($"Failed to process the PDF. Please try again or contact support, with the following message: {ex}"));
             }
         }
+
+        private async Task StartProcessing()
+        {
+            var sourceDirectoryPath = Preferences.Get("sourceDirectoryPath", string.Empty);
+            var outputDirectoryPath = Preferences.Get("outputDirectoryPath", string.Empty);
+
+            if (string.IsNullOrEmpty(sourceDirectoryPath) || string.IsNullOrEmpty(outputDirectoryPath))
+            {
+                WeakReferenceMessenger.Default.Send(new Messages("Source Directory or Output Directory is not selected. Please select in Setting tab."));
+                return;
+            }
+            await SelectPath("selectedFilePath");
+            if (string.IsNullOrWhiteSpace(_selectedFilePath))
+            {
+                WeakReferenceMessenger.Default.Send(new Messages("Select a Pdf to Start Processing"));
+                return;
+            }
+            try
+            {
+                PdfProcessor pdfProcessor = new PdfProcessor(_selectedFilePath);
+                var processedPageData = await pdfProcessor.ProcessPdfAsync();
+
+                if (processedPageData == null)
+                {
+                    WeakReferenceMessenger.Default.Send(new Messages("Processed page data is null."));
+                    return;
+                }
+
+                var newExtractedData = processedPageData.Where(p => p != null).Select(p => p.Extracted).ToList();
+                var newWarningMessages = processedPageData
+                                             .Where(p => p != null && p.Processed != null)
+                                             .SelectMany(p => p.Processed.WarningMessages ?? Enumerable.Empty<string>())
+                                             .ToList();
+
+
+                await Dispatcher.DispatchAsync(() =>
+                {
+                    DisposeAndClearCollection(ExtractedPagesData);
+                    DisposeAndClearCollection(PaginatedWarnings);
+                    ExtractedPagesData = new ObservableCollection<ExtractedData>(newExtractedData);
+                    allWarnings = new List<string>(newWarningMessages);
+                    CurrentPage = 1;
+                    TotalPages = (int)Math.Ceiling(allWarnings.Count / (double)itemsPerPage);
+                    UpdatePaginatedWarnings();
+
+                    OnPropertyChanged(nameof(ExtractedPagesData));
+                    OnPropertyChanged(nameof(PaginatedWarnings));
+                });
+            }
+            catch (Exception ex)
+            {
+                WeakReferenceMessenger.Default.Send(new Messages($"Failed to process the PDF. Please try again or contact support, with the following message: {ex}"));
+            }
+        }
+
         private void DisposeAndClearCollection<T>(ObservableCollection<T> collection)
         {
             if (collection != null)

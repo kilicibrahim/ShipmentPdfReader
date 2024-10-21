@@ -149,5 +149,15 @@
                     Command="{Binding StartProcessingCommand}"
                     HorizontalOptions="Center"/>
         </StackLayout>
+        <StackLayout Grid.Row="2" Grid.ColumnSpan="2" Orientation="Vertical" Spacing="10" Padding="5"
+                     HorizontalOptions="End" VerticalOptions="End">
+            <Button x:Name="StartBatchButton"
+             Text="Batch Processing"
+             Padding="20,10"
+             WidthRequest="160" 
+             HeightRequest="50" 
+             Command="{Binding StartBatchProcessingCommand}"
+             HorizontalOptions="Center"/>
+        </StackLayout>
     </Grid>
 </ContentPage>
